@@ -4,10 +4,15 @@
       <img src="../assets/Logo.png" alt="Inkspires Logo" />
     </div>
     <nav class="nav-menu">
-      <ul>
+      <ul v-if="!this.$getters.isLoggedIn()">
         <li><router-link to="/">Inicio</router-link></li>
         <li><router-link to="/login">Login</router-link></li>
         <li><router-link to="/register">Register</router-link></li>
+      </ul>
+      <ul v-else>
+        <li><router-link to="/userProfile">{{ this.$getters.currentUser().email }}</router-link></li>
+        <li>Publicar</li>
+        <li>Logout</li>
       </ul>
     </nav>
   </header>
