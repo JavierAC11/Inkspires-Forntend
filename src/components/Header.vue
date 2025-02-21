@@ -10,14 +10,33 @@
         <li><router-link to="/register">Register</router-link></li>
       </ul>
       <ul v-else>
+        <li><router-link to="/">Inicio</router-link></li>
+
         <li><router-link to="/userProfile">{{ this.$getters.currentUser().email }}</router-link></li>
         <li><router-link to="/userProfile/publicar">Publicar</router-link></li>
-        <li v-on:click="this.$mutations.clearUser()">Logout</li>
+        <li v-on:click="logout()">Logout</li>
       </ul>
     </nav>
   </header>
 </template>
 
+<script>
+import router from '@/router';
+
+export default {
+  name: "Header",
+  methods: {
+    logout() {
+      this.$mutations.clearUser();
+      router.push({ name: "Home" });
+    },
+  },
+};
+
+  
+
+
+</script>
 <style scoped>
 .header {
   display: flex;
