@@ -46,6 +46,11 @@
       handleSubmit() {
         // Aquí puedes implementar la lógica de autenticación
         console.log('Iniciando sesión con:', this.email, this.password)
+        const data = {
+          email: this.email,
+          password: this.password
+        }
+        this.$mutations.setUser(data)
         // Por ejemplo, llamar a una API de autenticación o actualizar el estado global
       },
       handleBlur(event) {
