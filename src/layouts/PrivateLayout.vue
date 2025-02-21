@@ -1,25 +1,38 @@
 <template>
-    <div id="app">
-      <Header />
-      <router-view></router-view>
-      <Footer />
-    </div>
-  </template>
-  
-  <script>
-  import Header from '../components/Header.vue'
-  import MainContent from '../views/Home.vue'
-  import Footer from '../components/Footer.vue'
-  
-  export default {
-    name: 'PrivateLayout',
-    components: {
-      Header,
-      MainContent,
-      Footer
+  <div id="app">
+    <Header />
+    <router-view></router-view>
+    <Footer />
+  </div>
+</template>
+
+<script>
+import Header from '../components/Header.vue'
+import Footer from '../components/Footer.vue'
+import { getters } from '../store' 
+
+export default {
+  name: 'PublicLayout',
+  components: {
+    Header,
+    Footer
+  },
+  beforeRouteEnter(to, from, next) {
+    if (!getters.isLoggedIn()) {
+      next({ name: 'Home' }) 
+    } else {
+      next()
+    }
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (!getters.isLoggedIn()) {
+      next({ name: 'Home' }) 
+    } else {
+      next()
     }
   }
-  </script>
+}
+</script>
   
   <style>
   body, html {

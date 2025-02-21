@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import PrivateLayout from '@/layouts/PrivateLayout.vue'
 import UserProfile from '@/views/UserProfile.vue'
+import Publicar from '@/views/Publicar.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -39,6 +40,11 @@ const routes = [
         name: "UserProfile",
         component: UserProfile
       },
+      {
+        path: "publicar",
+        name: "Publicar",
+        component: Publicar
+      }
     ]
   }
 ]

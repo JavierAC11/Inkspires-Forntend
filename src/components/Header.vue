@@ -11,8 +11,8 @@
       </ul>
       <ul v-else>
         <li><router-link to="/userProfile">{{ this.$getters.currentUser().email }}</router-link></li>
-        <li>Publicar</li>
-        <li>Logout</li>
+        <li><router-link to="/userProfile/publicar">Publicar</router-link></li>
+        <li v-on:click="this.$mutations.clearUser()">Logout</li>
       </ul>
     </nav>
   </header>
