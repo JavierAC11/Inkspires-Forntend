@@ -1,21 +1,16 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { store, mutations, getters } from './store'
+import { createPinia } from 'pinia'
+import piniaPluginPersist from 'pinia-plugin-persist'
 
 // Si necesitas acceder a la variable de entorno en la aplicación, por ejemplo:
-const baseUrl = ""
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersist)
 
 const app = createApp(App)
 
-app.config.globalProperties.$store = store
-app.config.globalProperties.$mutations = mutations
-app.config.globalProperties.$getters = getters
-
-// Añadimos el router a la aplicación
-app.use(router)
+app.use(router).use(pinia).mount('#app')
 
 // Opcional: puedes configurar una propiedad global si la necesitas en varios componentes
-app.config.globalProperties.$baseUrl = baseUrl
-
-app.mount('#app')

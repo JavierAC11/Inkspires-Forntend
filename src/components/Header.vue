@@ -4,7 +4,7 @@
       <img src="../assets/Logo.png" alt="Inkspires Logo" />
     </div>
     <nav class="nav-menu">
-      <ul v-if="!this.$getters.isLoggedIn()">
+     <!-- <ul v-if="!this.$getters.isLoggedIn()">
         <li><router-link to="/">Inicio</router-link></li>
         <li><router-link to="/login">Login</router-link></li>
         <li><router-link to="/register">Register</router-link></li>
@@ -15,7 +15,7 @@
         <li><router-link to="/userProfile">{{ this.$getters.currentUser().email }}</router-link></li>
         <li><router-link to="/userProfile/publicar">Publicar</router-link></li>
         <li v-on:click="logout()">Logout</li>
-      </ul>
+      </ul>-->
     </nav>
   </header>
 </template>
@@ -26,10 +26,8 @@ import router from '@/router';
 export default {
   name: "Header",
   methods: {
-    logout() {
-      this.$mutations.clearUser();
-      router.push({ name: "Home" });
-    },
+    
+
   },
 };
 

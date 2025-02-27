@@ -9,7 +9,6 @@
 <script>
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
-import { getters } from '../store' 
 
 export default {
   name: 'PublicLayout',
