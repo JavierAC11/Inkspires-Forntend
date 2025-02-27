@@ -9,13 +9,26 @@
 <script>
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+import { onMounted } from 'vue';
+import { useAuthStore } from '@/store/authStore';
+import router from '@/router';
 
 export default {
+
   name: 'PublicLayout',
   components: {
     Header,
     Footer
+  },
+  setup() {
+    const { isLogin } = useAuthStore();
+    onMounted(() => {
+      if (!isLogin) {
+        router.push('/login');
+      }
+    });
   }
+  
 }
 </script>
   

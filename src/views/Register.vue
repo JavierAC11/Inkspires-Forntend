@@ -62,6 +62,9 @@
 </template>
 
 <script>
+import router from '@/router';
+import { useAuthStore } from '@/store/authStore';
+
 export default {
   name: "Register",
   data() {
@@ -78,6 +81,12 @@ export default {
       },
       errors: {}
     };
+  },
+  setup() {
+    const { isLogin } = useAuthStore();
+    if (isLogin) {
+      router.push('/userProfile');
+    }
   },
   methods: {
     handleBlur(event) {
@@ -100,6 +109,7 @@ export default {
         else delete this.errors.password;
       }
     },
+    
     handleSubmit() {
       console.log('Registrando usuario con:', this.form)
       // TODO: Implementar lógica de registro

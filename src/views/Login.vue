@@ -34,6 +34,8 @@
 <script>
 import { mapState } from 'pinia';
 import { useAuthStore } from '@/store/authStore';
+import router from '@/router';
+
 
 export default {
   name: "Login",
@@ -48,6 +50,12 @@ export default {
   computed: {
     ...mapState(useAuthStore, ['isLogin', 'user'])
   },
+  setup() {
+    const { isLogin } = useAuthStore();
+    if (isLogin) {
+      router.push('/userProfile');
+    }
+  },
   methods: {
     async handleSubmit() {
       if (!this.emailError && !this.passwordError) {
@@ -57,7 +65,7 @@ export default {
             email: this.email,
             password: this.password
           });
-          this.$router.push('/userProfile');
+          router.push('/userProfile');
         } catch (error) {
           console.error('Error en el login:', error);
           // Aquí puedes manejar el error, por ejemplo, mostrar un mensaje al usuario
