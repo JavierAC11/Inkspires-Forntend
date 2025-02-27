@@ -1,10 +1,10 @@
 <template>
-    <div class="user-profile">
-      <h2>Perfil de {{ user.name }}</h2>
+    <div class="user-profile" v-if="user">
+      <h2>Perfil de {{ user.nombre }}</h2>
       
       <div class="profile-section">
         <h3>Información básica</h3>
-        <p><strong>Nombre:</strong> {{ user.name }}</p>
+        <p><strong>Nombre:</strong> {{ user.nombre }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
       </div>
   
@@ -16,9 +16,9 @@
         <p><strong>Descripción:</strong> {{ user.descripcion }}</p>
       </div>
   
-      <div class="profile-actions">
+      <!--<div class="profile-actions">
         <button @click="editProfile">Editar perfil</button>
-      </div>
+      </div>-->
   
       <div class="user-posts">
         <h3>Mis Posts</h3>
@@ -34,16 +34,22 @@
   </template>
   
   <script>
+  import { getMe } from '@/helpers/getMe';
   export default {
     name: 'UserProfile',
     data() {
       return {
-        user: this.$getters.currentUser(),
+        user: null,
         userPosts: [] // Aquí almacenaremos los posts del usuario
       }
     },
     mounted() {
       this.fetchUserPosts()
+      getMe().then((user) => {
+        this.user = user
+      })
+      
+      
     },
     methods: {
       editProfile() {

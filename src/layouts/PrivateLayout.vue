@@ -15,20 +15,6 @@ export default {
   components: {
     Header,
     Footer
-  },
-  beforeRouteEnter(to, from, next) {
-    if (!getters.isLoggedIn()) {
-      next({ name: 'Home' }) 
-    } else {
-      next()
-    }
-  },
-  beforeRouteUpdate(to, from, next) {
-    if (!getters.isLoggedIn()) {
-      next({ name: 'Home' }) 
-    } else {
-      next()
-    }
   }
 }
 </script>
