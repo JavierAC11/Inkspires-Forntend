@@ -20,13 +20,27 @@
 </template>
 
 <script>
+import { getMe } from '@/helpers/getMe';
 import { useAuthStore } from '@/store/authStore';
 import { mapState } from 'pinia';
 
 export default {
   name: "Header",
+  data() {
+    return {
+      currentUser: null
+    }
+  },
   computed: {
-    ...mapState(useAuthStore, ['isLogin', 'currentUser'])
+    ...mapState(useAuthStore, ['isLogin'])
+  },
+  mounted() {
+    if (this.isLogin) {
+      const authStore = useAuthStore();
+      getMe().then((user) => {
+        this.currentUser = user;
+      });
+    }
   },
   methods: {
     logout() {
