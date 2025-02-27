@@ -4,37 +4,40 @@
       <img src="../assets/Logo.png" alt="Inkspires Logo" />
     </div>
     <nav class="nav-menu">
-     <!-- <ul v-if="!this.$getters.isLoggedIn()">
+      <ul v-if="!isLogin">
         <li><router-link to="/">Inicio</router-link></li>
         <li><router-link to="/login">Login</router-link></li>
         <li><router-link to="/register">Register</router-link></li>
       </ul>
       <ul v-else>
         <li><router-link to="/">Inicio</router-link></li>
-
-        <li><router-link to="/userProfile">{{ this.$getters.currentUser().email }}</router-link></li>
+        <li><router-link to="/userProfile">{{ currentUser?.email }}</router-link></li>
         <li><router-link to="/userProfile/publicar">Publicar</router-link></li>
-        <li v-on:click="logout()">Logout</li>
-      </ul>-->
+        <li @click="logout">Logout</li>
+      </ul>
     </nav>
   </header>
 </template>
 
 <script>
-import router from '@/router';
+import { useAuthStore } from '@/store/authStore';
+import { mapState } from 'pinia';
 
 export default {
   name: "Header",
+  computed: {
+    ...mapState(useAuthStore, ['isLogin', 'currentUser'])
+  },
   methods: {
-    
-
+    logout() {
+      const authStore = useAuthStore();
+      authStore.logout();
+      this.$router.push('/login');
+    }
   },
 };
-
-  
-
-
 </script>
+
 <style scoped>
 .header {
   display: flex;

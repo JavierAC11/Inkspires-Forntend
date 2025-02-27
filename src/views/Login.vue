@@ -57,9 +57,7 @@ export default {
             email: this.email,
             password: this.password
           });
-          console.log('Login exitoso');
-          // Aquí puedes redirigir al usuario o mostrar un mensaje de éxito
-          // Por ejemplo: this.$router.push('/dashboard');
+          this.$router.push('/userProfile');
         } catch (error) {
           console.error('Error en el login:', error);
           // Aquí puedes manejar el error, por ejemplo, mostrar un mensaje al usuario

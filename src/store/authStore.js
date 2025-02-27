@@ -26,9 +26,23 @@ export const useAuthStore = defineStore('auth', {
                 console.log(error);
             }
     },
-    logout() {
-      this.token = null;
-      this.isLogin = false;
+
+    async logout() {
+      
+        try{
+            const response = await axios.post(`http://localhost/api/logout`, {}, {
+                headers: {
+                    Authorization: `Bearer ${this.token}`
+                }
+            });
+            this.token = null;
+            this.isLogin = false;
+            console.log(response)
+        }
+        catch(error){
+            console.log(error);
+        }
+        
     },
   },
   persist: {
