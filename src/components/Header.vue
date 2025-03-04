@@ -11,7 +11,7 @@
       </ul>
       <ul v-else>
         <li><router-link to="/">Inicio</router-link></li>
-        <li><router-link to="/userProfile">{{ currentUser?.email }}</router-link></li>
+        <li><router-link to="/userProfile">{{ currentUser?.nombre }}</router-link></li>
         <li><router-link to="/userProfile/publicar">Publicar</router-link></li>
         <li @click="logout">Logout</li>
       </ul>
@@ -79,6 +79,7 @@ export default {
 
 .nav-menu li {
   margin-left: 1.5rem;
+  cursor: pointer;
 }
 
 .nav-menu a {

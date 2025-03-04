@@ -23,10 +23,11 @@
       <div class="user-posts">
         <h3>Mis Posts</h3>
         <div v-if="userPosts.length > 0" class="posts-grid">
-          <div v-for="post in userPosts" :key="post.id" class="post-card">
+          <PostsCards :posts="userPosts" />
+          <!--<div v-for="post in userPosts" :key="post.id" class="post-card">
             <img :src="post.imagen_url" :alt="post.descripcion">
             <p>{{ post.descripcion }}</p>
-          </div>
+          </div>-->
         </div>
         <p v-else>Aún no has publicado ningún post.</p>
       </div>
@@ -35,6 +36,8 @@
   
   <script>
   import { getMe } from '@/helpers/getMe';
+  import PostsCards from '@/components/PostsCards.vue';
+
   export default {
     name: 'UserProfile',
     data() {
@@ -61,6 +64,9 @@
           { id: 2, imagen_url: 'https://placehold.co/200x200', descripcion: 'Diseño personalizado' },
         ]
       }
+    }, 
+    components: {
+      PostsCards
     }
   }
   </script>
@@ -109,21 +115,6 @@
     gap: 20px;
   }
   
-  .post-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .post-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-  }
-  
-  .post-card p {
-    padding: 10px;
-    margin: 0;
-  }
+
   </style>
   

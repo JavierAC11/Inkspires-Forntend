@@ -2,6 +2,7 @@
 
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import router from '@/router'
 
 
 
@@ -27,6 +28,28 @@ export const useAuthStore = defineStore('auth', {
             }
     },
 
+    async register(userData) {
+      try {
+        console.log('Datos a enviar:', userData);
+        const response = await axios.post('http://localhost/api/register', userData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        this.token = response.data.access_token;
+        this.isLogin = true;
+      } 
+      catch (error) {
+        if (error.response) {
+          console.error('Error de respuesta:', error.response.data);
+          throw error.response.data;
+        } else {
+          console.error('Error:', error);
+          throw error;
+        }
+      }
+    },
+
     async logout() {
       
         try{
@@ -37,7 +60,7 @@ export const useAuthStore = defineStore('auth', {
             });
             this.token = null;
             this.isLogin = false;
-            console.log(response)
+            router.push('/login');
         }
         catch(error){
             console.log(error);

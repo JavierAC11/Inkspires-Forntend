@@ -1,12 +1,12 @@
 <template>
-  <div :class="{'register-container': true, 'full-height': form.is_tatuador}">
+  <div :class="{'register-container': true, 'full-height': form.esTatuador}">
     <form v-on:submit.prevent="handleSubmit" class="register-form">
       <h2>Registro</h2>
 
       <div class="form-group">
-        <label for="name">Nombre</label>
-        <input type="text" id="name" v-on:blur="handleBlur($event)" v-model.trim="form.name" required />
-        <p v-if="errors.name" class="error">{{ errors.name }}</p>
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" v-on:blur="handleBlur($event)" v-model.trim="form.nombre" required />
+        <p v-if="errors.nombre" class="error">{{ errors.nombre }}</p>
       </div>
 
       <div class="form-group">
@@ -23,24 +23,24 @@
 
       <div class="form-group switch-container">
         <label class="switch">
-          <input type="checkbox" v-model="form.is_tatuador">
+          <input type="checkbox" v-model="form.esTatuador">
           <span class="slider round"></span>
         </label>
         <span>¿Eres tatuador?</span>
       </div>
 
       <!-- Campos adicionales para tatuadores -->
-      <div v-if="form.is_tatuador">
+      <div v-if="form.esTatuador">
         <div class="form-group">
-          <label for="estilos">Estilos de tatuaje</label>
-          <input type="text" id="estilos" v-model.trim="form.estilos" />
-          <p v-if="errors.estilos" class="error">{{ errors.estilos }}</p>
+          <label for="estilo">Estilo de tatuaje</label>
+          <input type="text" id="estilo" v-model.trim="form.estilo" />
+          <p v-if="errors.estilo" class="error">{{ errors.estilo }}</p>
         </div>
 
         <div class="form-group">
-          <label for="precio_medio">Precio medio</label>
-          <input type="number" step="0.01" id="precio_medio" v-model.number="form.precio_medio" />
-          <p v-if="errors.precio_medio" class="error">{{ errors.precio_medio }}</p>
+          <label for="precioMedio">Precio medio</label>
+          <input type="number" step="0.01" id="precioMedio" v-model.number="form.precioMedio" />
+          <p v-if="errors.precioMedio" class="error">{{ errors.precioMedio }}</p>
         </div>
 
         <div class="form-group">
@@ -70,12 +70,12 @@ export default {
   data() {
     return {
       form: {
-        name: "",
+        nombre: "",
         email: "",
         password: "",
-        is_tatuador: false,
-        estilos: "",
-        precio_medio: null,
+        esTatuador: false,
+        estilo: "",
+        precioMedio: null,
         descripcion: "",
         ubicacion: ""
       },
@@ -92,31 +92,70 @@ export default {
     handleBlur(event) {
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
 
-      if (event.target.id === "name") {
-        if (!this.form.name) this.errors.name = "El nombre es requerido.";
-        else delete this.errors.name;
+      if (event.target.id === "nombre") {
+        if (!this.form.nombre) this.errors.nombre = "El nombre es requerido.";
+        else delete this.errors.nombre;
       }
       else if (event.target.id === "email") {
         if (this.form.email === '' || !emailRegex.test(this.form.email)) this.errors.email = "El correo electrónico es incorrecto.";
         else delete this.errors.email;
       } 
-      else if (event.target.id === "password") {
+      /*else if (event.target.id === "password") {
         console.log(this.form.password)
         if (this.form.password === '' || !passwordRegex.test(this.form.password)) this.errors.password = "La contraseña debe tener al menos 8 caracteres e incluir una letra mayúscula, una minúscula, un número y un carácter especial (@$!%*?&).";
         else delete this.errors.password;
-      }
+      }*/
     },
     
-    handleSubmit() {
+    async handleSubmit() {
       console.log('Registrando usuario con:', this.form)
-      // TODO: Implementar lógica de registro
+      
+      if (Object.keys(this.errors).length === 0) {
+        const authStore = useAuthStore();
+        console.log(this.form)
+        if (!this.form.esTatuador) {
+          try {
+
+            await authStore.register({
+              nombre: this.form.nombre,
+              email: this.form.email,
+              password: this.form.password,
+              esTatuador: this.form.esTatuador,
+            });
+            router.push('/userProfile');
+            } catch (error) {
+            console.error('Error en el registro:', error);
+          }
+        }
+        else {
+          try {
+            await authStore.register({
+              nombre: this.form.nombre,
+              email: this.form.email,
+              password: this.form.password,
+              esTatuador: this.form.esTatuador,
+              estilo: this.form.estilo,
+              precioMedio: this.form.precioMedio,
+              descripcion: this.form.descripcion,
+              ubicacion: this.form.ubicacion
+            });
+            router.push('/userProfile');
+          }
+          catch (error) {
+            console.error('Error en el registro:', error);
+          }
+        }
+
+        
+      
     }
 
   }
-};
+}
+}
 
 
 
