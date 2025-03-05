@@ -89,10 +89,36 @@ export default {
         // Aquí puedes manejar la respuesta exitosa, como mostrar un mensaje o redirigir
         this.$router.push('/userProfile'); // Redirige al perfil del usuario después de publicar
         
-      } catch (error) {
+      } 
+      
+      catch (error) { 
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.error('No autorizado:', error.response.data)
+            this.error = 'No estás autorizado para publicar. Por favor, inicia sesión.';
+          } else if (error.response.status === 422) {
+            if (error.response.data.errors.imgUrl) {
+              console.error('Error en la imagen:', error.response.data.errors.imgUrl)
+              this.error = 'La imagen es requerida, pruebe con otra imagen.';
+            } else {
+              console.error('Error en los datos:', error.response.data)
+              this.error = 'Hubo un error en los datos. Por favor, verifica los campos.';
+            } 
+          }
+        else {
+          console.error('Error al publicar:', error)
+          this.error = 'Hubo un error al publicar el post. Por favor, intenta de nuevo.';
+        }
+        
+      }
+      else {
         console.error('Error al publicar:', error)
         this.error = 'Hubo un error al publicar el post. Por favor, intenta de nuevo.';
-      } finally {
+      }
+      } 
+      
+      
+      finally {
         this.isLoading = false;
       }
     }
