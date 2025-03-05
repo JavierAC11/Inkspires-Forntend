@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@vueuse/core": "^12.7.0",
     "axios": "^1.8.1",
     "pinia": "^3.0.1",

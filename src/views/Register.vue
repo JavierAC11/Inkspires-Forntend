@@ -1,26 +1,28 @@
 <template>
   <div :class="{'register-container': true, 'full-height': form.esTatuador}">
-    <form v-on:submit.prevent="handleSubmit" class="register-form">
+    <form @submit.prevent="handleSubmit" class="register-form">
       <h2>Registro</h2>
 
+      <!-- Campos básicos -->
       <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" v-on:blur="handleBlur($event)" v-model.trim="form.nombre" required />
+        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" required />
         <p v-if="errors.nombre" class="error">{{ errors.nombre }}</p>
       </div>
 
       <div class="form-group">
         <label for="email">Correo Electrónico</label>
-        <input type="email" id="email" v-on:blur="handleBlur($event)" v-model.trim="form.email" required />
+        <input type="email" id="email" @blur="handleBlur($event)" v-model.trim="form.email" required />
         <p v-if="errors.email" class="error">{{ errors.email }}</p>
       </div>
 
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" v-on:blur="handleBlur($event)" v-model="form.password" required />
+        <input type="password" id="password" @blur="handleBlur($event)" v-model="form.password" required />
         <p v-if="errors.password" class="error">{{ errors.password }}</p>
       </div>
 
+      <!-- Switch para tatuadores -->
       <div class="form-group switch-container">
         <label class="switch">
           <input type="checkbox" v-model="form.esTatuador">
@@ -49,19 +51,29 @@
           <p v-if="errors.descripcion" class="error">{{ errors.descripcion }}</p>
         </div>
 
+        <!-- Campo de ubicación con autocompletado de Google Maps -->
         <div class="form-group">
           <label for="ubicacion">Ubicación</label>
-          <input type="text" id="ubicacion" v-model.trim="form.ubicacion" />
+          <input 
+            type="text" 
+            id="ubicacion" 
+            ref="autocompleteInput" 
+            v-model="form.ubicacion"
+            placeholder="Introduce tu ubicación..." 
+            required 
+          />
           <p v-if="errors.ubicacion" class="error">{{ errors.ubicacion }}</p>
         </div>
       </div>
 
+      <!-- Botón de registro -->
       <button type="submit" class="register-button">Registrarse</button>
     </form>
   </div>
 </template>
 
 <script>
+import { Loader } from "@googlemaps/js-api-loader";
 import router from '@/router';
 import { useAuthStore } from '@/store/authStore';
 
@@ -79,86 +91,77 @@ export default {
         descripcion: "",
         ubicacion: ""
       },
-      errors: {}
+      errors: {},
+      autocomplete: null
     };
   },
-  setup() {
-    const { isLogin } = useAuthStore();
-    if (isLogin) {
-      router.push('/userProfile');
+  mounted() {
+    if (this.form.esTatuador) {
+      this.initAutocomplete();
+    }
+  },
+  watch: {
+    'form.esTatuador'(newValue) {
+      if (newValue) {
+        this.$nextTick(() => {
+          this.initAutocomplete();
+        });
+      }
     }
   },
   methods: {
+    async initAutocomplete() {
+      const loader = new Loader({
+        apiKey: "AIzaSyB_vnEk5emcWj3SR2pcK6qo5lYE1KB_ghU",
+        libraries: ["places"]
+      });
+
+      const google = await loader.load();
+      
+      this.autocomplete = new google.maps.places.Autocomplete(this.$refs.autocompleteInput, {
+        types: ["geocode"], // Limita los resultados a ubicaciones geográficas
+      });
+
+      this.autocomplete.addListener("place_changed", () => {
+        const place = this.autocomplete.getPlace();
+        
+        if (place.geometry) {
+          this.form.ubicacion = place.formatted_address; // Guarda la dirección completa
+          console.log("Ubicación seleccionada:", this.form.ubicacion);
+        } else {
+          console.error("No se encontró una ubicación válida.");
+          this.errors.ubicacion = "Por favor selecciona una ubicación válida.";
+        }
+      });
+    },
     handleBlur(event) {
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (event.target.id === "nombre") {
         if (!this.form.nombre) this.errors.nombre = "El nombre es requerido.";
         else delete this.errors.nombre;
-      }
-      else if (event.target.id === "email") {
+      } else if (event.target.id === "email") {
         if (this.form.email === '' || !emailRegex.test(this.form.email)) this.errors.email = "El correo electrónico es incorrecto.";
         else delete this.errors.email;
-      } 
-      /*else if (event.target.id === "password") {
-        console.log(this.form.password)
-        if (this.form.password === '' || !passwordRegex.test(this.form.password)) this.errors.password = "La contraseña debe tener al menos 8 caracteres e incluir una letra mayúscula, una minúscula, un número y un carácter especial (@$!%*?&).";
-        else delete this.errors.password;
-      }*/
+      }
     },
-    
     async handleSubmit() {
-      console.log('Registrando usuario con:', this.form)
-      
+      console.log('Registrando usuario con:', this.form);
+
       if (Object.keys(this.errors).length === 0) {
         const authStore = useAuthStore();
-        console.log(this.form)
-        if (!this.form.esTatuador) {
-          try {
 
-            await authStore.register({
-              nombre: this.form.nombre,
-              email: this.form.email,
-              password: this.form.password,
-              esTatuador: this.form.esTatuador,
-            });
-            router.push('/userProfile');
-            } catch (error) {
-            console.error('Error en el registro:', error);
-          }
+        try {
+          await authStore.register(this.form);
+          router.push('/userProfile');
+        } catch (error) {
+          console.error('Error en el registro:', error);
+          this.errors.general = "Hubo un problema al registrarse. Por favor, inténtelo nuevamente.";
         }
-        else {
-          try {
-            await authStore.register({
-              nombre: this.form.nombre,
-              email: this.form.email,
-              password: this.form.password,
-              esTatuador: this.form.esTatuador,
-              estilo: this.form.estilo,
-              precioMedio: this.form.precioMedio,
-              descripcion: this.form.descripcion,
-              ubicacion: this.form.ubicacion
-            });
-            router.push('/userProfile');
-          }
-          catch (error) {
-            console.error('Error en el registro:', error);
-          }
-        }
-
-        
-      
+      }
     }
-
   }
-}
-}
-
-
-
+};
 </script>
 
 <style scoped>
