@@ -28,7 +28,7 @@ defineProps({
   
   .post-card img {
     width: 100%;
-    height: 100%;
+    height: 90%;
     object-fit: cover;
   }
   

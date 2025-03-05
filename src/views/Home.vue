@@ -3,12 +3,13 @@
     <h1>Bienvenido a Inkspires</h1>
     <p>Descubre el arte del tatuaje y conecta con artistas increíbles.</p>
     
-    <div class="posts-container">
+    <div class="posts-grid">
+    
       <PostsCards :posts="posts" />
       <div ref="loadingTrigger" class="loading-trigger">
         <p v-if="loading">Cargando más posts...</p>
-      </div>
     </div>
+  </div>
   </main>
 </template>
 
@@ -67,6 +68,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .main-content {
   min-height: calc(90vh - 120px);
   padding: 2rem;
@@ -79,6 +82,13 @@ export default {
 h1 {
   color: #333;
   margin-bottom: 1rem;
+}
+
+.posts-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 p {
