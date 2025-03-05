@@ -1,6 +1,6 @@
 <template>
     <div v-for="post in posts" :key="post.id" class="post-card">
-      <img :src="post.imagen_url" :alt="post.descripcion">
+      <img :src="post.imgUrl" :alt="post.descripcion">
       <p>{{ post.descripcion }}</p>
     </div>
 </template>

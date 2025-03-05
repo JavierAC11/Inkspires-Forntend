@@ -60,8 +60,8 @@
       },
       fetchUserPosts() {
         this.userPosts = [
-          { id: 1, imagen_url: 'https://placehold.co/200x200', descripcion: 'Mi primer tatuaje' },
-          { id: 2, imagen_url: 'https://placehold.co/200x200', descripcion: 'Diseño personalizado' },
+          { id: 1, imgUrl: 'https://placehold.co/200x200', descripcion: 'Mi primer tatuaje' },
+          { id: 2, imgUrl: 'https://placehold.co/200x200', descripcion: 'Diseño personalizado' },
         ]
       }
     }, 
