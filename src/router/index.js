@@ -25,6 +25,11 @@ const routes = [
       name: "Register",
       component: () => import('@/views/Register.vue')
     },
+    {
+      path: "post/:id",
+      name: "Post",
+      component: () => import('@/views/TattooView.vue')
+    },
       ]
   },
   {

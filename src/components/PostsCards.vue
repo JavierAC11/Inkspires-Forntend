@@ -1,40 +1,118 @@
 <template>
-    <div v-for="post in posts" :key="post.id" class="post-card">
-      <img :src="post.imgUrl" :alt="post.descripcion">
-      <p>{{ post.descripcion }}</p>
+  <div class="post-grid">
+    <div 
+      v-for="post in posts" 
+      :key="post.id" 
+      class="post-card"
+      @click="navigateToPost(post.id)"
+    >
+      <div class="post-image-container">
+        <img :src="post.imgUrl" :alt="post.descripcion" class="post-image">
+      </div>
+      <div class="post-content">
+        <h3 class="post-title">{{ truncateText(post.descripcion, 50) }}</h3>
+        <p class="post-description">{{ truncateText(post.descripcion, 100) }}</p>
+        <div class="post-meta">
+          <span class="post-date">{{ formatDate(post.fechaCreacion) }}</span>
+          <span class="post-likes">❤️ {{ post.likes_count || 0 }}</span>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
-
-defineProps({
+const props = defineProps({
   posts: {
     type: Array,
     required: true
   },
 });
 
+const router = useRouter();
+
+const navigateToPost = (postId) => {
+  router.push(`/post/${postId}`);
+};
+
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) return text;
+  return text.substr(0, maxLength) + '...';
+};
+
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
 </script>
 
 <style scoped>
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
 
 .post-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .post-card img {
-    width: 100%;
-    height: 90%;
-    object-fit: cover;
-  }
-  
-  .post-card p {
-    padding: 10px;
-    margin: 0;
-  }
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  background-color: #ffffff;
+}
 
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.post-image-container {
+  height: 200px;
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.post-card:hover .post-image {
+  transform: scale(1.05);
+}
+
+.post-content {
+  padding: 16px;
+}
+
+.post-title {
+  margin: 0 0 8px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.post-description {
+  margin: 0 0 12px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8em;
+  color: #888;
+}
+
+@media (max-width: 640px) {
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
