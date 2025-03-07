@@ -1,21 +1,15 @@
 <template>
-  <div class="post-grid">
-    <div 
-      v-for="post in posts" 
-      :key="post.id" 
-      class="post-card"
-      @click="navigateToPost(post.id)"
-    >
-      <div class="post-image-container">
-        <img :src="post.imgUrl" :alt="post.descripcion" class="post-image">
-      </div>
-      <div class="post-content">
-        <h3 class="post-title">{{ truncateText(post.descripcion, 50) }}</h3>
-        <p class="post-description">{{ truncateText(post.descripcion, 100) }}</p>
-        <div class="post-meta">
-          <span class="post-date">{{ formatDate(post.fechaCreacion) }}</span>
-          <span class="post-likes">❤️ {{ post.likes_count || 0 }}</span>
-        </div>
+  <div class="post-card" @click="navigateToPost(post.id)">
+    <div class="post-image-container">
+      <img :src="post.imgUrl" :alt="post.descripcion" class="post-image">
+    </div>
+    <div class="post-content">
+      <h3 class="post-title">{{ truncateText(post.descripcion, 50) }}</h3>
+      <p class="post-description">{{ truncateText(post.descripcion, 100) }}</p>
+      <div class="post-meta">
+        <span class="post-date">{{ formatDate(post.fechaCreacion) }}</span>
+        <span class="post-likes">❤️ {{ post.likes_count || 0 }}</span>
+        <LikeButton :post="post" />
       </div>
     </div>
   </div>
@@ -24,12 +18,11 @@
 <script setup>
 import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
+import LikeButton from './LikeButton.vue';
 
 const props = defineProps({
-  posts: {
-    type: Array,
-    required: true
-  },
+  post: Object,
+  
 });
 
 const router = useRouter();
@@ -50,13 +43,6 @@ const formatDate = (dateString) => {
 </script>
 
 <style scoped>
-.post-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-  padding: 24px;
-}
-
 .post-card {
   border-radius: 12px;
   overflow: hidden;

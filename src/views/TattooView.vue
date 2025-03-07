@@ -2,131 +2,131 @@
     <div v-if="loading" class="loading">Cargando...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else class="tattoo-info-container">
-      <div class="tattoo-section">
-        <h2>Información del Tatuaje</h2>
-        <img :src="tattoo.imgUrl" :alt="tattoo.descripcion" class="tattoo-image">
-        <div class="tattoo-details">
-          <h3>{{ tattoo.titulo }}</h3>
-          <p>{{ tattoo.descripcion }}</p>
-          <ul>
-            <li><strong>Estilo:</strong> {{ tattoo.estilo }}</li>
-            <li><strong>Tamaño:</strong> {{ tattoo.tamaño }}</li>
-            <li><strong>Fecha:</strong> {{ formatDate(tattoo.fechaCreacion) }}</li>
-          </ul>
-        </div>
-      </div>
-  
-      <div class="artist-section">
-        <h2>Información del usuario</h2>
-        <div class="artist-details">
-          <h3>{{ tattoo.user.nombre }}</h3>
-          <p>{{ tattoo.user.descripcion }}</p>
-          <ul v-if="tattoo.user.esTatuador">
-            <li><strong>Descripción:</strong> {{ tattoo.user.tatuador.descripcion }}</li>
-            <li><strong>Especialidad:</strong> {{ tattoo.user.tatuador.estilo }}</li>
-            <li><strong>Precio medio:</strong> ${{ tattoo.user.tatuador.precioMedio }}</li>
-            <li><strong>Ubicación:</strong> {{ tattoo.user.tatuador.ubicacion }}</li>
-            <li><strong>Email:</strong> {{ tattoo.user.email }}</li>
-          </ul>
-        </div>
-      </div>
+    <div class="tattoo-section">
+    <h2>Información del Tatuaje</h2>
+    <img :src="tattoo.imgUrl" :alt="tattoo.descripcion" class="tattoo-image">
+    <div class="tattoo-details">
+    <h3>{{ tattoo.titulo }}</h3>
+    <p>{{ tattoo.descripcion }}</p>
+    <ul>
+    <li><strong>Estilo:</strong> {{ tattoo.estilo }}</li>
+    <li><strong>Tamaño:</strong> {{ tattoo.tamaño }}</li>
+    <li><strong>Fecha:</strong> {{ formatDate(tattoo.fechaCreacion) }}</li>
+    </ul>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
+    </div>
+    
+    <div class="artist-section">
+    <h2>Información del usuario</h2>
+    <div class="artist-details">
+    <h3>{{ tattoo.user.nombre }}</h3>
+    <p>{{ tattoo.user.descripcion }}</p>
+    <ul v-if="tattoo.user.esTatuador">
+    <li><strong>Descripción:</strong> {{ tattoo.user.tatuador.descripcion }}</li>
+    <li><strong>Especialidad:</strong> {{ tattoo.user.tatuador.estilo }}</li>
+    <li><strong>Precio medio:</strong> ${{ tattoo.user.tatuador.precioMedio }}</li>
+    <li><strong>Ubicación:</strong> {{ tattoo.user.tatuador.ubicacion }}</li>
+    <li><strong>Email:</strong> {{ tattoo.user.email }}</li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </template>
+    
+    <script>
+    import axios from 'axios';
+    
+    export default {
     name: 'TattooAndArtistInfo',
     data() {
-      return {
-        tattoo: null,
-        loading: true,
-        error: null
-      }
+    return {
+    tattoo: null,
+    loading: true,
+    error: null
+    }
     },
     mounted() {
-      this.fetchTattooInfo();
+    this.fetchTattooInfo();
     },
     methods: {
-      async fetchTattooInfo() {
-        try {
-          const tattooId = this.$route.params.id; // Asume que el ID del tatuaje está en la ruta
-          const response = await axios.get(`http://localhost/api/posts/${tattooId}`);
-          console.log(response.data);
-          this.tattoo = response.data.data;
-          console.log(JSON.stringify(this.tattoo) );
-          this.loading = false;
-        } catch (error) {
-          console.error('Error fetching tattoo info:', error);
-          this.error = 'No se pudo cargar la información del tatuaje.';
-          this.loading = false;
-        }
-      },
-      formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString();
-      }
+    async fetchTattooInfo() {
+    try {
+    const tattooId = this.$route.params.id; // Asume que el ID del tatuaje está en la ruta
+    const response = await axios.get(`http://localhost/api/posts/${tattooId}`);
+    console.log(response.data);
+    this.tattoo = response.data.data;
+    console.log(JSON.stringify(this.tattoo) );
+    this.loading = false;
+    } catch (error) {
+    console.error('Error fetching tattoo info:', error);
+    this.error = 'No se pudo cargar la información del tatuaje.';
+    this.loading = false;
     }
-  }
-  </script>
-  
-  <style scoped>
-  .tattoo-info-container {
+    },
+    formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString();
+    }
+    }
+    }
+    </script>
+    
+    <style scoped>
+    .tattoo-info-container {
     display: flex;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
     gap: 40px;
-  }
-  
-  .tattoo-section, .artist-section {
+    }
+    
+    .tattoo-section, .artist-section {
     flex: 1;
     background-color: #f9f9f9;
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-  }
-
-  .tattoo-section:hover, .artist-section:hover {
+    }
+    
+    .tattoo-section:hover, .artist-section:hover {
     transform: translateY(-5px);
-  }
-  
-  .tattoo-image, .artist-image {
+    }
+    
+    .tattoo-image, .artist-image {
     width: 100%;
     height: auto;
     border-radius: 8px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
+    }
+    
+    h2 {
     color: #333;
     margin-bottom: 20px;
     font-size: 24px;
     border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
-  }
-  
-  h3 {
+    }
+    
+    h3 {
     color: #555;
     margin-bottom: 15px;
     font-size: 20px;
-  }
-  
-  ul {
+    }
+    
+    ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  li {
+    }
+    
+    li {
     margin-bottom: 12px;
     line-height: 1.6;
     color: #666;
-  }
-  
-  .loading, .error {
+    }
+    
+    .loading, .error {
     text-align: center;
     padding: 40px;
     font-size: 20px;
@@ -134,40 +134,40 @@
     border-radius: 8px;
     margin: 20px auto;
     max-width: 400px;
-  }
-  
-  .error {
+    }
+    
+    .error {
     color: #d32f2f;
     border: 1px solid #ffa4a2;
     background-color: #fff5f5;
-  }
-  
-  @media (max-width: 968px) {
+    }
+    
+    @media (max-width: 968px) {
     .tattoo-info-container {
-      flex-direction: column;
+    flex-direction: column;
     }
-  
+    
     .tattoo-section, .artist-section {
-      width: 100%;
-      margin-bottom: 30px;
+    width: 100%;
+    margin-bottom: 30px;
     }
-  }
-
-  @media (max-width: 480px) {
+    }
+    
+    @media (max-width: 480px) {
     .tattoo-info-container {
-      padding: 20px 10px;
+    padding: 20px 10px;
     }
-
+    
     .tattoo-section, .artist-section {
-      padding: 20px;
+    padding: 20px;
     }
-
+    
     h2 {
-      font-size: 20px;
+    font-size: 20px;
     }
-
+    
     h3 {
-      font-size: 18px;
+    font-size: 18px;
     }
-  }
-</style>
+    }
+    </style>

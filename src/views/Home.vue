@@ -5,7 +5,7 @@
     
     <div class="posts-grid">
     
-      <PostsCards :posts="posts" />
+      <PostGrid :posts="posts" />
       <div ref="loadingTrigger" class="loading-trigger">
         <p v-if="loading">Cargando más posts...</p>
     </div>
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import PostsCards from '@/components/PostsCards.vue'
+import PostGrid from '@/components/PostGrid.vue'
 import { getPosts } from '@/helpers/getPosts'
 
 export default {
   name: 'Home',
   components: {
-    PostsCards
+    PostGrid
   },
   data() {
     return {
