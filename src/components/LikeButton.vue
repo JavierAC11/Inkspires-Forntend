@@ -1,88 +1,108 @@
 <template>
+  <button @click.stop="handleLike(post.id)" v-if="isLogin">
     <div v-if="hasLike !== null">
-      <button @click.stop="handleLike(post.id)" v-if="isLoggedIn">
-        <i class="fa fa-thumbs-up" v-if="!hasLike">Dar like</i>
-        <i class="fa fa-thumbs-down" v-else>Quitar like</i>
-      </button>
-      <p v-else>Por favor inicia sesión para dar like.</p>
+      
+      <i class="fa fa-thumbs-up" v-if="!hasLike">{{ likesCount }} <v-icon name="fc-like-placeholder" /></i>
+      <i class="fa fa-thumbs-down" v-else>{{ likesCount }} <v-icon name="fc-like" /></i>
     </div>
     <div v-else>
       Cargando...
     </div>
-  </template>
-  
-  <script setup>
-  import { defineProps, ref, onMounted } from 'vue';
-  import axios from 'axios';
-  import { useAuthStore } from '@/store/authStore';
-  import { getHasLike } from '@/helpers/getHasLike';
-  
-  const props = defineProps({
+  </button>
+  <i v-else>{{ likesCount }} <v-icon name="fc-like" />
+  <p>Para dar like inicia sesion</p>
+  </i>
+
+</template>
+
+<script>
+import axios from 'axios';
+import { getHasLike } from '@/helpers/getHasLike';
+import { useAuthStore } from '@/store/authStore';
+import { mapState } from 'pinia';
+import { OhVueIcon } from "oh-vue-icons";
+import { AiAcademiaSquare } from "oh-vue-icons/icons";
+
+export default {
+  props: {
     post: Object,
-  });
-  
-  const authStore = useAuthStore();
-  
-  const isLoggedIn = authStore.isLogin;
-  
-  const hasLike = ref(null);
-  
-  onMounted(async () => {
-    if (!isLoggedIn) return;
-    hasLike.value = await getHasLike(props.post.id, authStore.token);
-  });
-  
-  const handleLike = async (postId) => {
-    try {
-      if (!hasLike.value) {
-        // Dar like (POST)
-        await axios.post(`http://localhost/api/posts/${postId}/like`, {}, {
-          headers: {
-            'Authorization': `Bearer ${authStore.token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        props.post.likedByUser = true;
-        props.post.likes_count++;
-        hasLike.value = true;
-      } else {
-        // Quitar like (DELETE)
-        await axios.delete(`http://localhost/api/posts/${postId}/like`, {
-          headers: {
-            'Authorization': `Bearer ${authStore.token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        props.post.likedByUser = false;
-        props.post.likes_count--;
-        hasLike.value = false;
+    likesCount: Number,
+  },
+  data() {
+    return {
+      hasLike: null,
+    };
+  },
+  computed: {
+    ...mapState(useAuthStore, ['isLogin', 'token']),
+  },
+  async mounted() {
+    await this.init();
+  },
+  methods: {
+    async init() {
+      if (!this.isLogin) return;
+      
+      try {
+        const hasLike = await getHasLike(this.post.id, this.token);
+        this.hasLike = hasLike;
+      } catch (error) {
+        console.error('Error al obtener el estado del like:', error);
       }
-    } catch (error) {
-      if (error.response && error.response.status === 409) {
-        console.log('El usuario ya ha dado like a este post.');
-        alert('Ya has dado like a este post.');
-      } else {
-        console.error('Error al dar/quitar like:', error);
-        alert('Hubo un problema al intentar dar/quitar like.');
+    },
+    async handleLike(postId) {
+      try {
+        if (!this.hasLike) {
+          await axios.post(`http://localhost/api/posts/${postId}/like`, {}, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          this.post.likedByUser = true;
+          this.post.likes_count++;
+          this.hasLike = true;
+        } else {
+          await axios.delete(`http://localhost/api/posts/${postId}/like`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          this.post.likedByUser = false;
+          this.post.likes_count--;
+          this.hasLike = false;
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 409) {
+          console.log('El usuario ya ha dado like a este post.');
+          alert('Ya has dado like a este post.');
+        } else {
+          console.error('Error al dar/quitar like:', error);
+          alert('Hubo un problema al intentar dar/quitar like.');
+        }
       }
-    }
-  };
-  </script>
-  
+    },
+  },
+  components: {
+    "v-icon": OhVueIcon,
+  },
+};
+</script>
+
 <style scoped>
 button {
-background-color: transparent;
-border: none;
-cursor: pointer;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
-
+/*
 button i {
-font-size: 1.2em;
-color: #007bff;
+  font-size: 1.2em;
+  color: #007bff;
 }
 
 button i.fa-thumbs-down {
-color: #dc3545;
-}
+  color: #dc3545;
+}*/
 </style>
-  

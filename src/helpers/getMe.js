@@ -2,8 +2,13 @@ import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 
 export const getMe = async () => {
-    const { token } = useAuthStore();
+    const { token, isLogin } = useAuthStore();
 
+
+
+    if (!isLogin) {
+        return;
+    }
     try {
         const response = await axios.get("http://localhost/api/me", {
         headers: {

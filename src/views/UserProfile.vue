@@ -23,7 +23,7 @@
     <div class="user-posts">
       <h3>Mis Posts</h3>
       <div v-if="userPosts.length > 0" class="posts-grid">
-        <PostsCards :posts="userPosts" />
+        <PostsGrid :posts="userPosts" />
         <!--<div v-for="post in userPosts" :key="post.id" class="post-card">
           <img :src="post.imagen_url" :alt="post.descripcion">
           <p>{{ post.descripcion }}</p>
@@ -40,8 +40,9 @@
 
 <script>
 import { getMe } from '@/helpers/getMe';
-import PostsCards from '@/components/PostsCards.vue';
+import PostsGrid from '@/components/PostGrid.vue';
 import { getMyPosts } from '@/helpers/getMyPosts';
+import PostGrid from '@/components/PostGrid.vue';
 
 export default {
   name: 'UserProfile',
@@ -66,6 +67,7 @@ export default {
       try {
         this.user = await getMe();
         this.loadUserPosts();
+        
       } catch (error) {
         console.error('Error al cargar datos del usuario:', error);
       }
@@ -78,6 +80,7 @@ export default {
         const response = await getMyPosts(this.user.id, this.page);
         const newPosts = response.data;
         this.userPosts = [...this.userPosts, ...newPosts];
+        console.log(this.userPosts)
         this.page++;
         this.hasMore = response.links.next !== null;
         
@@ -104,7 +107,7 @@ export default {
     }
   },
   components: {
-    PostsCards
+    PostsGrid
   }
 }
 </script>

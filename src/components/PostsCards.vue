@@ -8,37 +8,50 @@
       <p class="post-description">{{ truncateText(post.descripcion, 100) }}</p>
       <div class="post-meta">
         <span class="post-date">{{ formatDate(post.fechaCreacion) }}</span>
-        <span class="post-likes">❤️ {{ post.likes_count || 0 }}</span>
-        <LikeButton :post="post" />
+        <LikeButton :post="post" :likesCount="post.likes_count || 0" />
+        <!--<span class="post-likes">{{ post.likes_count || 0 }}</span>-->
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { defineProps } from 'vue';
+<script>
 import { useRouter } from 'vue-router';
 import LikeButton from './LikeButton.vue';
 
-const props = defineProps({
-  post: Object,
-  
-});
+export default {
+  props: {
+    post: {
+      type: Object,
+      required: true
+    }
+  },
+  components: {
+    LikeButton,
+  },
+  setup() {
+    const router = useRouter();
 
-const router = useRouter();
+    const navigateToPost = (postId) => {
+      router.push(`/post/${postId}`);
+    };
 
-const navigateToPost = (postId) => {
-  router.push(`/post/${postId}`);
-};
+    const truncateText = (text, maxLength) => {
+      if (text.length <= maxLength) return text;
+      return text.substr(0, maxLength) + '...';
+    };
 
-const truncateText = (text, maxLength) => {
-  if (text.length <= maxLength) return text;
-  return text.substr(0, maxLength) + '...';
-};
+    const formatDate = (dateString) => {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    };
 
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+    return {
+      navigateToPost,
+      truncateText,
+      formatDate,
+    };
+  },
 };
 </script>
 
