@@ -3,31 +3,45 @@
     <h1>Bienvenido a Inkspires</h1>
     <p>Descubre el arte del tatuaje y conecta con artistas increíbles.</p>
     
-    <div class="posts-grid">
+    <Filtro @apply-filters="applyFiltersToPosts" />
     
-      <PostGrid :posts="posts" />
-      <div ref="loadingTrigger" class="loading-trigger">
-        <p v-if="loading">Cargando más posts...</p>
-    </div>
+    <div class="posts-grid">
+  <div v-if="filteredPosts.length > 0 || (posts.length > 0 && !filtersApplied)">
+    <PostGrid :posts="filteredPosts.length > 0 ? filteredPosts : posts" />
   </div>
+  <div v-else-if="filtersApplied">
+    <p>No hay posts disponibles después de aplicar los filtros.</p>
+  </div>
+  <div v-else>
+    <p>No hay posts disponibles.</p>
+  </div>
+  <div ref="loadingTrigger" class="loading-trigger">
+    <p v-if="loading">Cargando más posts...</p>
+  </div>
+</div>
   </main>
 </template>
 
+
 <script>
 import PostGrid from '@/components/PostGrid.vue'
+import Filtro from '@/components/Filtro.vue'
 import { getPosts } from '@/helpers/getPosts'
 
 export default {
   name: 'Home',
   components: {
-    PostGrid
+    PostGrid,
+    Filtro
   },
   data() {
     return {
       posts: [],
+      filteredPosts: [],
       page: 1,
       loading: false,
-      hasMore: true
+      hasMore: true,
+      filtersApplied: false
     }
   },
   mounted() {
@@ -62,14 +76,21 @@ export default {
       if (rect.top <= window.innerHeight && !this.loading && this.hasMore) {
         this.loadPosts()
       }
-    }
+    },
+    applyFiltersToPosts(filters) {
+    console.log('Filtros aplicados:', filters);
+    this.filteredPosts = this.posts.filter(post => {
+      return (filters.estilo === '' || post.estilo === filters.estilo) &&
+             (filters.tamaño === '' || post.tamaño === filters.tamaño)
+    });
+    this.filtersApplied = true;
+  }
   }
 }
 </script>
 
+
 <style scoped>
-
-
 .main-content {
   min-height: calc(90vh - 120px);
   padding: 2rem;
