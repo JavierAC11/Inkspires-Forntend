@@ -198,6 +198,7 @@ export default {
     async handleSubmit() {
       console.log('Registrando usuario con:', this.form);
 
+      console.log("Entrando...")
       if (Object.keys(this.errors).length === 0) {
         if (!this.form.esTatuador){
           if (!this.form.nombre || !this.form.email || !this.form.password || !this.form.passwordRepeat){

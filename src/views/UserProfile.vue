@@ -40,7 +40,6 @@
 
 <script>
 import { getMe } from '@/helpers/getMe';
-import PostsGrid from '@/components/PostGrid.vue';
 import { getMyPosts } from '@/helpers/getMyPosts';
 import PostGrid from '@/components/PostGrid.vue';
 
