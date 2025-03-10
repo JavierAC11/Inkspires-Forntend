@@ -10,9 +10,8 @@
           v-model="email" 
           type="email" 
           placeholder="ejemplo@dominio.com" 
-          required
         />
-        <p class="error" v-if="emailError">Email incorrecto</p>
+        <p class="error" v-if="emailError">{{ emailError }}</p>
       </div>
       <div class="form-group">
         <label for="password">Contraseña</label>
@@ -22,20 +21,23 @@
           v-model="password" 
           type="password" 
           placeholder="Contraseña" 
-          required
+          
         />
-        <p v-if="passwordError" class="error">La contraseña no puede estar vacía.</p>
+        <p v-if="passwordError" class="error">{{ passwordError }}</p>
       </div>
+      <p v-if="loginError" class="error">{{ loginErrorMessage }}</p>
       <button type="submit" class="login-button">Entrar</button>
     </form>
   </div>
 </template>
 
+
+
 <script>
 import { mapState } from 'pinia';
 import { useAuthStore } from '@/store/authStore';
 import router from '@/router';
-
+import Swal from 'sweetalert2';
 
 export default {
   name: "Login",
@@ -44,7 +46,8 @@ export default {
       email: '',
       password: '',
       emailError: false,
-      passwordError: false
+      passwordError: false,
+      loginError: false
     }
   },
   computed: {
@@ -58,8 +61,10 @@ export default {
   },
   methods: {
     async handleSubmit() {
+
       if (!this.emailError && !this.passwordError) {
-        const authStore = useAuthStore();
+        if(this.email || this.password){
+          const authStore = useAuthStore();
         try {
           await authStore.login({
             email: this.email,
@@ -67,31 +72,51 @@ export default {
           });
           router.push('/userProfile');
         } catch (error) {
-          console.error('Error en el login:', error);
-          // Aquí puedes manejar el error, por ejemplo, mostrar un mensaje al usuario
+          this.showError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
+          this.email = '';
+          this.password = '';
         }
+        }
+        else{
+          this.showError('Por favor, completa todos los campos correctamente.');
+        }
+        
+      } else {
+        this.showError('Por favor, completa todos los campos correctamente.');
       }
     },
     handleBlur(event) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
       if (event.target.id === 'email') {
-        if (this.email === '' || !emailRegex.test(this.email)) {
-          this.emailError = true
+        if (this.email === '') {
+          this.emailError = "Email invalido";
+        } else if (!emailRegex.test(this.email)) {
+          this.emailError = "Email invalido";
         } else {
-          this.emailError = false
+          this.emailError = false;
         }
       } else if (event.target.id === 'password') {
         if (this.password === '') {
-          this.passwordError = true
+          this.passwordError = "La contraseña no puede estar vacia";
         } else {
-          this.passwordError = false
+          this.passwordError = false;
         }
       }
+    },
+    showError(message) {
+      console.log("error: "+ message)
+      Swal.fire({
+        title: '¡Error!',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
     }
   }
 }
 </script>
+
 
 <style scoped>
 .error {

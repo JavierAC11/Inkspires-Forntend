@@ -24,8 +24,8 @@ export const useAuthStore = defineStore('auth', {
             console.log(this.token)
     }
         catch(error){
-                console.log(error);
-            }
+          throw error; 
+        }
     },
 
     async register(userData) {
@@ -53,13 +53,14 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       
         try{
-            const response = await axios.post(`http://localhost/api/logout`, {}, {
+          this.isLogin = false;  
+          const response = await axios.post(`http://localhost/api/logout`, {}, {
                 headers: {
                     Authorization: `Bearer ${this.token}`
                 }
             });
+            
             this.token = null;
-            this.isLogin = false;
             router.push('/login');
         }
         catch(error){

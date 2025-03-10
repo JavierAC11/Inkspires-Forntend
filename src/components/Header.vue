@@ -9,6 +9,9 @@
         <li><router-link to="/login">Login</router-link></li>
         <li><router-link to="/register">Register</router-link></li>
       </ul>
+      <ul v-else-if="!currentUser">
+        Cargando...
+      </ul>
       <ul v-else>
         <li><router-link to="/">Inicio</router-link></li>
         <li><router-link to="/userProfile">{{ currentUser?.nombre }}</router-link></li>
