@@ -1,20 +1,20 @@
 <template>
   <div class="user-profile" v-if="user">
-    <h2>Perfil de {{ user.nombre }}</h2>
     
-    <div class="profile-section">
-      <h3>Información básica</h3>
-      <p><strong>Nombre:</strong> {{ user.nombre }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
-    </div>
-
-    <div v-if="user.is_tatuador" class="profile-section">
-      <h3>Información del tatuador</h3>
-      <p><strong>Estilos:</strong> {{ user.estilos }}</p>
-      <p><strong>Precio medio:</strong> ${{ user.precio_medio }}</p>
-      <p><strong>Ubicación:</strong> {{ user.ubicacion }}</p>
-      <p><strong>Descripción:</strong> {{ user.descripcion }}</p>
-    </div>
+    <div class="profile-sections">
+  <div class="profile-section">
+    <h3>Información básica</h3>
+    <p><strong>Nombre:</strong> {{ user.data.nombre }}</p>
+    <p><strong>Email:</strong> {{ user.data.email }}</p>
+  </div>
+  <div v-if="user.data.esTatuador" class="profile-section">
+    <h3>Información del tatuador</h3>
+    <p><strong>Estilo:</strong> {{ user.data.tatuador.estilo }}</p>
+    <p><strong>Precio medio:</strong> ${{ user.data.tatuador.precioMedio }}</p>
+    <p><strong>Ubicación:</strong> {{ user.data.tatuador.ubicacion }}</p>
+    <p><strong>Descripción:</strong> {{ user.data.tatuador.descripcion }}</p>
+  </div>
+</div>
 
     <!--<div class="profile-actions">
       <button @click="editProfile">Editar perfil</button>
@@ -23,7 +23,7 @@
     <div class="user-posts">
       <h3>Mis Posts</h3>
       <div v-if="userPosts.length > 0" class="posts-grid">
-        <PostsGrid :posts="userPosts" />
+        <PostGrid :posts="userPosts" />
         <!--<div v-for="post in userPosts" :key="post.id" class="post-card">
           <img :src="post.imagen_url" :alt="post.descripcion">
           <p>{{ post.descripcion }}</p>
@@ -77,7 +77,7 @@ export default {
 
       this.loading = true;
       try {
-        const response = await getMyPosts(this.user.id, this.page);
+        const response = await getMyPosts(this.user.data.id, this.page);
         const newPosts = response.data;
         this.userPosts = [...this.userPosts, ...newPosts];
         console.log(this.userPosts)
@@ -107,7 +107,7 @@ export default {
     }
   },
   components: {
-    PostsGrid
+    PostGrid
   }
 }
 </script>
@@ -120,10 +120,15 @@ export default {
   min-height: 70vh;
 }
 
-.profile-section {
-  margin-bottom: 20px;
+.profile-sections {
+  display: flex;
+  gap: 20px;
 }
 
+.profile-section {
+  flex: 1;
+  margin-bottom: 20px;
+}
 h2, h3 {
   color: #333;
 }

@@ -6,20 +6,31 @@
       <!-- Campos básicos -->
       <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" required />
+        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" />
         <p v-if="errors.nombre" class="error">{{ errors.nombre }}</p>
       </div>
 
       <div class="form-group">
         <label for="email">Correo Electrónico</label>
-        <input type="email" id="email" @blur="handleBlur($event)" v-model.trim="form.email" required />
+        <input type="email" id="email" @blur="handleBlur($event)" v-model.trim="form.email" />
         <p v-if="errors.email" class="error">{{ errors.email }}</p>
       </div>
 
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" @blur="handleBlur($event)" v-model="form.password" required />
+        <input type="password" id="password" @blur="handleBlur($event)" v-model="form.password" />
         <p v-if="errors.password" class="error">{{ errors.password }}</p>
+      </div>
+      <div class="form-group">
+        <label for="passwordRepeat">Repetir Contraseña</label>
+        <input 
+          id="passwordRepeat" 
+          @blur="handleBlur($event)"
+          v-model="form.passwordRepeat" 
+          type="password" 
+          placeholder="Repetir contraseña" 
+        />
+        <p v-if="errors.passwordRepeat" class="error">{{ errors.passwordRepeat }}</p>
       </div>
 
       <!-- Switch para tatuadores -->
@@ -35,19 +46,29 @@
       <div v-if="form.esTatuador">
         <div class="form-group">
           <label for="estilo">Estilo de tatuaje</label>
-          <input type="text" id="estilo" v-model.trim="form.estilo" />
+          <select id="estilo" v-model="form.estilo"
+          @blur="handleBlur($event)"
+          >
+          <option value="">Selecciona un estilo</option>
+          <option value="tradicional">Tradicional</option>
+          <option value="realista">Realista</option>
+          <option value="neotradicional">Neotradicional</option>
+          <option value="blackwork">Blackwork</option>
+        </select>
           <p v-if="errors.estilo" class="error">{{ errors.estilo }}</p>
         </div>
 
         <div class="form-group">
           <label for="precioMedio">Precio medio</label>
-          <input type="number" step="0.01" id="precioMedio" v-model.number="form.precioMedio" />
+          <input type="number" step="1" min="0" id="precioMedio" v-model.number="form.precioMedio" @blur="handleBlur($event)"
+          />
           <p v-if="errors.precioMedio" class="error">{{ errors.precioMedio }}</p>
         </div>
 
         <div class="form-group">
           <label for="descripcion">Descripción</label>
-          <textarea id="descripcion" v-model.trim="form.descripcion"></textarea>
+          <textarea id="descripcion"           @blur="handleBlur($event)"
+          v-model.trim="form.descripcion"></textarea>
           <p v-if="errors.descripcion" class="error">{{ errors.descripcion }}</p>
         </div>
 
@@ -59,8 +80,8 @@
             id="ubicacion" 
             ref="autocompleteInput" 
             v-model="form.ubicacion"
-            placeholder="Introduce tu ubicación..." 
-            required 
+            placeholder="Introduce tu ubicación..."
+            @blur="handleBlur($event)" 
           />
           <p v-if="errors.ubicacion" class="error">{{ errors.ubicacion }}</p>
         </div>
@@ -76,6 +97,7 @@
 import { Loader } from "@googlemaps/js-api-loader";
 import router from '@/router';
 import { useAuthStore } from '@/store/authStore';
+import Swal from "sweetalert2";
 
 export default {
   name: "Register",
@@ -144,11 +166,51 @@ export default {
         if (this.form.email === '' || !emailRegex.test(this.form.email)) this.errors.email = "El correo electrónico es incorrecto.";
         else delete this.errors.email;
       }
+      else if (event.target.id === "password"){
+        if (this.form.password.length < 8) this.errors.password = "La contraseña debe tener al menos 8 caracteres.";
+        else delete this.errors.password;
+      }
+      else if(event.target.id === "passwordRepeat"){
+        if (this.form.password !== this.form.passwordRepeat) this.errors.passwordRepeat = "Las contraseñas no coinciden.";
+        else delete this.errors.passwordRepeat;
+      }
+      else if(event.target.id === "estilo"){
+        if (!this.form.estilo) this.errors.estilo = "El estilo es requerido.";
+        else delete this.errors.estilo;
+      }
+      else if(event.target.id === "precioMedio"){
+        if (!this.form.precioMedio) this.errors.precioMedio = "El precio medio es requerido.";
+        else if (this.form.precioMedio < 0) this.errors.precioMedio = "El precio medio no puede ser negativo.";
+        else delete this.errors.precioMedio;
+      }
+      else if(event.target.id === "descripcion"){
+        console.log(this.form.descripcion)
+        if (!this.form.descripcion) this.errors.descripcion = "La descripción es requerida.";
+        else delete this.errors.descripcion;
+      }
+      else if(event.target.id === "ubicacion"){
+        if (!this.form.ubicacion) this.errors.ubicacion = "La ubicación es requerida.";
+        else delete this.errors.ubicacion;
+      }
+      
+        
     },
     async handleSubmit() {
       console.log('Registrando usuario con:', this.form);
 
       if (Object.keys(this.errors).length === 0) {
+        if (!this.form.esTatuador){
+          if (!this.form.nombre || !this.form.email || !this.form.password || !this.form.passwordRepeat){
+            this.showError("Por favor, completa todos los campos correctamente.");
+            return;
+          } 
+        }
+        else{
+          if (!this.form.nombre || !this.form.email || !this.form.password || !this.form.passwordRepeat || !this.form.estilo || !this.form.precioMedio || !this.form.descripcion || !this.form.ubicacion){
+            this.showError("Por favor, completa todos los campos correctamente.");
+            return;
+          }
+        }
         const authStore = useAuthStore();
 
         try {
@@ -159,6 +221,18 @@ export default {
           this.errors.general = "Hubo un problema al registrarse. Por favor, inténtelo nuevamente.";
         }
       }
+      else {
+        this.showError("Por favor, completa todos los campos correctamente.");
+      }
+    },
+    showError(message) {
+      console.log("error: "+ message)
+      Swal.fire({
+        title: '¡Error!',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
     }
   }
 };
@@ -209,6 +283,14 @@ export default {
 .form-group input[type="password"],
 .form-group input[type="number"],
 .form-group textarea {
+  width: 93%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group select{
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ccc;
@@ -217,7 +299,7 @@ export default {
 }
 
 .register-button {
-  width: 93%;
+  width: 100%;
   padding: 0.75rem;
   background-color: #1a1a1a;
   color: #fff;

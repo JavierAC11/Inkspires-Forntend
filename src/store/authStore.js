@@ -38,6 +38,7 @@ export const useAuthStore = defineStore('auth', {
         });
         this.token = response.data.access_token;
         this.isLogin = true;
+
       } 
       catch (error) {
         if (error.response) {
