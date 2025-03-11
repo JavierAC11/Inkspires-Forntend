@@ -218,9 +218,16 @@ export default {
           await authStore.register(this.form);
           router.push('/userProfile');
         } catch (error) {
+          console.log(error.errors)
+          if (error.errors.email.includes("The email has already been taken.")) {
+            this.showError("El correo electrónico ya está en uso.");
+            router.push('/login');
+          } else {
+
           console.error('Error en el registro:', error);
           this.errors.general = "Hubo un problema al registrarse. Por favor, inténtelo nuevamente.";
         }
+      }
       }
       else {
         this.showError("Por favor, completa todos los campos correctamente.");
