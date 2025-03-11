@@ -1,0 +1,103 @@
+<!-- PortfolioView.vue -->
+<template>
+    <div class="portfolio-page">
+      <h1>Portafolio del tatuador {{ $route.params.id }}</h1>
+      
+      <!-- Sección de información del tatuador -->
+      <div class="tattooer-info">
+        <h2>Información del tatuador</h2>
+        <p><strong>Nombre:</strong> {{ tattooer.nombre }}</p>
+        <p><strong>Estilo:</strong> {{ tattooer.estilo }}</p>
+        <p><strong>Ubicación:</strong> {{ tattooer.location }}</p>
+      </div>
+      
+      <div>
+        <h2>Trabajos del portafolio</h2>
+          <PostGrid :posts="portfolioWorks" />
+        
+      </div>
+    </div>
+  </template>
+  
+  
+  <script>
+  import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
+import PostGrid from '@/components/PostGrid.vue';
+
+export default {
+  name: 'PortfolioView',
+  data() {
+    return {
+      tattooer: {},
+      portfolioWorks: [],
+      apiUrl: import.meta.env.VITE_API_URL
+    }
+  },
+  async mounted() {
+    const authStore = useAuthStore();
+    const tattooerId = this.$route.params.id;
+    
+    try {
+      // Cargar información del tatuador
+      const responseTattooer = await axios.get(`${this.apiUrl}/users/${tattooerId}`);
+      this.tattooer = responseTattooer.data.data.tatuador;
+      console.log(this.tattooer);
+      
+      // Cargar trabajos del portafolio
+      const responseWorks = await axios.get(`${this.apiUrl}/users/${tattooerId}/posts`);
+      this.portfolioWorks = responseWorks.data.data;
+      console.log(this.portfolioWorks)
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    }
+  },
+  components: {
+    PostGrid
+  }
+}
+</script>
+<style>
+.portfolio-page {
+  margin: 20px;
+  padding: 20px;
+}
+
+.tattooer-info {
+  margin-bottom: 40px;
+}
+
+.tattooer-info p {
+  margin-bottom: 10px;
+}
+
+.portfolio-works {
+  margin-top: 40px;
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.work-card {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.work-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px 4px 0 0;
+}
+
+.work-card p {
+  margin-top: 10px;
+}
+
+</style>
+  

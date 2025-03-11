@@ -30,7 +30,11 @@ const routes = [
       name: "Post",
       component: () => import('@/views/TattooView.vue')
     },
-      ]
+    {
+      path: '/portfolio/:id',
+      name: 'portfolio',
+      component: () => import('@/views/Portfolio.vue')
+    },  ]
   },
   {
     path: "/userProfile",

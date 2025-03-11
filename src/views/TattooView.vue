@@ -13,6 +13,7 @@
     <li><strong>Tamaño:</strong> {{ tattoo.tamaño }}</li>
     <li><strong>Fecha:</strong> {{ formatDate(tattoo.fechaCreacion) }}</li>
     </ul>
+
     </div>
     </div>
     
@@ -27,8 +28,12 @@
     <li><strong>Precio medio:</strong> ${{ tattoo.user.tatuador.precioMedio }}</li>
     <li><strong>Ubicación:</strong> {{ tattoo.user.tatuador.ubicacion }}</li>
     <li><strong>Email:</strong> {{ tattoo.user.email }}</li>
-    </ul>
-    </div>
+    <button class="portfolio-button" @click="navigateToPortfolio">Portafolio</button>    
+</ul>
+    
+
+
+</div>
     </div>
     </div>
     </template>
@@ -42,7 +47,8 @@
     return {
     tattoo: null,
     loading: true,
-    error: null
+    error: null,
+    apiUrl: import.meta.env.VITE_API_URL
     }
     },
     mounted() {
@@ -52,7 +58,7 @@
     async fetchTattooInfo() {
     try {
     const tattooId = this.$route.params.id; // Asume que el ID del tatuaje está en la ruta
-    const response = await axios.get(`http://localhost/api/posts/${tattooId}`);
+    const response = await axios.get(`${this.apiUrl}/posts/${tattooId}`);
     console.log(response.data);
     this.tattoo = response.data.data;
     console.log(JSON.stringify(this.tattoo) );
@@ -65,6 +71,10 @@
     },
     formatDate(dateString) {
     return new Date(dateString).toLocaleDateString();
+    },
+    navigateToPortfolio() {
+    this.$router.push(`/portfolio/${this.tattoo.user.id}`);
+    
     }
     }
     }
@@ -170,4 +180,24 @@
     font-size: 18px;
     }
     }
+    .portfolio-button {
+  background-color: #1a1a1a; /* Color de fondo */
+  color: white; /* Color del texto */
+  padding: 10px 20px; /* Espacio interno del botón */
+  border: none; /* Borde del botón */
+  border-radius: 4px; /* Esquinas redondeadas */
+  cursor: pointer; /* Cambiar el cursor a mano */
+  font-size: 16px; /* Tamaño de la fuente */
+  font-weight: bold; /* Negrita */
+  transition: background-color 0.3s ease; /* Transición al hacer hover */
+}
+
+.portfolio-button:hover {
+  background-color: #333; /* Color de fondo al hacer hover */
+}
+
+.portfolio-button:active {
+  transform: translateY(2px); /* Efecto de presión */
+}
+
     </style>

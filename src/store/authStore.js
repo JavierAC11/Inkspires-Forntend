@@ -7,6 +7,7 @@ import router from '@/router'
 
 
 export const useAuthStore = defineStore('auth', {
+  
     
   state: () => ({
     token: null,
@@ -15,9 +16,11 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     
     async login(credentials) {
+      const apiUrl = import.meta.env.VITE_API_URL;
+
         try{
             console.log(credentials)
-        const response = await axios.post(`http://localhost/api/login`, credentials);
+        const response = await axios.post(`${apiUrl}/login`, credentials);
           
         this.token = response.data.access_token;
         this.isLogin = true;
@@ -29,9 +32,11 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async register(userData) {
+      const apiUrl = import.meta.env.VITE_API_URL;
+
       try {
         console.log('Datos a enviar:', userData);
-        const response = await axios.post('http://localhost/api/register', userData, {
+        const response = await axios.post(`${apiUrl}/register`, userData, {
           headers: {
             'Content-Type': 'application/json'
           }
@@ -52,10 +57,12 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
+      const apiUrl = import.meta.env.VITE_API_URL;
+
       
         try{
           this.isLogin = false;  
-          const response = await axios.post(`http://localhost/api/logout`, {}, {
+          const response = await axios.post(`${apiUrl}/logout`, {}, {
                 headers: {
                     Authorization: `Bearer ${this.token}`
                 }

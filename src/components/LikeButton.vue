@@ -31,6 +31,8 @@ export default {
   data() {
     return {
       hasLike: null,
+      apiUrl: import.meta.env.VITE_API_URL
+
     };
   },
   computed: {
@@ -53,7 +55,7 @@ export default {
     async handleLike(postId) {
       try {
         if (!this.hasLike) {
-          await axios.post(`http://localhost/api/posts/${postId}/like`, {}, {
+          await axios.post(`${this.apiUrl}/posts/${postId}/like`, {}, {
             headers: {
               'Authorization': `Bearer ${this.token}`,
               'Content-Type': 'application/json'
@@ -63,7 +65,7 @@ export default {
           this.post.likes_count++;
           this.hasLike = true;
         } else {
-          await axios.delete(`http://localhost/api/posts/${postId}/like`, {
+          await axios.delete(`${this.apiUrl}/posts/${postId}/like`, {
             headers: {
               'Authorization': `Bearer ${this.token}`,
               'Content-Type': 'application/json'

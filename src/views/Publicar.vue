@@ -69,7 +69,9 @@ export default {
       imageError: null,
       descripcionError: null,
       estiloError: null,
-      tamanoError: null
+      tamanoError: null,
+      apiUrl: import.meta.env.VITE_API_URL
+
     }
   },
   methods: {
@@ -150,7 +152,7 @@ export default {
         formData.append('estilo', this.estilo)
         formData.append('tamaño', this.tamano)
         
-        const response = await axios.post('http://localhost/api/posts', formData, {
+        const response = await axios.post(`${this.apiUrl}/posts`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${authStore.token}`

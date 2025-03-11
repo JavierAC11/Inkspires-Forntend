@@ -22,6 +22,11 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
 export default {
+  data() {
+    return {
+      apiUrl: import.meta.env.VITE_API_URL
+    };
+  },
   props: {
     post: {
       type: Object,
@@ -64,7 +69,7 @@ export default {
       const authStore = useAuthStore();
       
       try {
-        await axios.delete(`http://localhost/api/posts/${postId}`, {
+        await axios.delete(`${this.apiUrl}/posts/${postId}`, {
         headers: {
           Authorization: `Bearer ${authStore.token}`
         }

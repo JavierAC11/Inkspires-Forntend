@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 export const  getHasLike = async (postId, token) => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+  
         try {
-            const response = await axios.get(`http://localhost/api/posts/${postId}/has-liked`, {
+            const response = await axios.get(`${apiUrl}/posts/${postId}/has-liked`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
