@@ -1,14 +1,17 @@
 <!-- PortfolioView.vue -->
 <template>
     <div class="portfolio-page">
-      <h1>Portafolio del tatuador {{ $route.params.id }}</h1>
+      <h1>Portafolio de {{ usuario.nombre }}</h1>
       
       <!-- Sección de información del tatuador -->
       <div class="tattooer-info">
         <h2>Información del tatuador</h2>
-        <p><strong>Nombre:</strong> {{ tattooer.nombre }}</p>
-        <p><strong>Estilo:</strong> {{ tattooer.estilo }}</p>
-        <p><strong>Ubicación:</strong> {{ tattooer.location }}</p>
+        <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        <p><strong>Descripción:</strong> {{ tatuador.descripcion }}</p>
+        <p><strong>Estilo:</strong> {{ tatuador.estilo }}</p>
+        <p><strong>Ubicación:</strong> {{ tatuador.ubicacion }}</p>
+        <p><strong>Precio medio:</strong> ${{ tatuador.precioMedio }}</p>
       </div>
       
       <div>
@@ -29,7 +32,8 @@ export default {
   name: 'PortfolioView',
   data() {
     return {
-      tattooer: {},
+      tatuador: {},
+      usuario: {},
       portfolioWorks: [],
       apiUrl: import.meta.env.VITE_API_URL
     }
@@ -41,8 +45,9 @@ export default {
     try {
       // Cargar información del tatuador
       const responseTattooer = await axios.get(`${this.apiUrl}/users/${tattooerId}`);
-      this.tattooer = responseTattooer.data.data.tatuador;
-      console.log(this.tattooer);
+      this.usuario = responseTattooer.data.data;
+      this.tatuador = responseTattooer.data.data.tatuador;
+      console.log(this.usuario);
       
       // Cargar trabajos del portafolio
       const responseWorks = await axios.get(`${this.apiUrl}/users/${tattooerId}/posts`);
@@ -63,11 +68,11 @@ export default {
   padding: 20px;
 }
 
-.tattooer-info {
+.tatuador-info {
   margin-bottom: 40px;
 }
 
-.tattooer-info p {
+.tatuador-info p {
   margin-bottom: 10px;
 }
 
