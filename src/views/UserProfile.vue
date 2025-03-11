@@ -23,7 +23,8 @@
     <div class="user-posts">
       <h3>Mis Posts</h3>
       <div v-if="userPosts.length > 0" class="posts-grid">
-        <PostGrid :posts="userPosts" />
+        <PostGrid :posts="userPosts" :show-delete-button="true" @delete-post="handleDeletePost" />
+
         <!--<div v-for="post in userPosts" :key="post.id" class="post-card">
           <img :src="post.imagen_url" :alt="post.descripcion">
           <p>{{ post.descripcion }}</p>
@@ -103,6 +104,9 @@ export default {
     },
     editProfile() {
       this.$router.push('/edit-profile');
+    },
+    handleDeletePost(postId) {
+      this.userPosts = this.userPosts.filter(post => post.id !== postId);
     }
   },
   components: {

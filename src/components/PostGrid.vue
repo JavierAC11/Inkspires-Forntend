@@ -4,6 +4,8 @@
       v-for="post in posts" 
       :key="post.id" 
       :post="post" 
+      :show-delete-button="showDeleteButton"
+      @delete-post="handleDeletePost"
     />
   </div>
 </template>
@@ -17,11 +19,21 @@ export default {
       type: Array,
       required: true
     },
+    showDeleteButton: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
     PostsCards,
-  },
-};
+  }
+  ,methods: {
+    handleDeletePost(postId) {
+      this.$emit('delete-post', postId);
+    }
+  }
+}
+
 </script>
 
 <style scoped>

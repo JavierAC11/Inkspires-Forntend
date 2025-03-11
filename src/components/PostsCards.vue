@@ -1,6 +1,6 @@
 <template>
-  <div class="post-card" @click="navigateToPost(post.id)">
-    <div class="post-image-container">
+  <div class="post-card">
+    <div class="post-image-container" @click="navigateToPost(post.id)">
       <img :src="post.imgUrl" :alt="post.descripcion" class="post-image">
     </div>
     <div class="post-content">
@@ -9,8 +9,8 @@
       <div class="post-meta">
         <span class="post-date">{{ formatDate(post.fechaCreacion) }}</span>
         <LikeButton :post="post" :likesCount="post.likes_count || 0" />
-        <!--<span class="post-likes">{{ post.likes_count || 0 }}</span>-->
       </div>
+      <button v-if="showDeleteButton" class="btn-delete" @click="handleDelete(post.id)">Eliminar</button>
     </div>
   </div>
 </template>
@@ -18,12 +18,18 @@
 <script>
 import { useRouter } from 'vue-router';
 import LikeButton from './LikeButton.vue';
+import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
 
 export default {
   props: {
     post: {
       type: Object,
       required: true
+    },
+    showDeleteButton: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -52,6 +58,25 @@ export default {
       formatDate,
     };
   },
+  methods: {
+    async handleDelete(postId) {
+
+      const authStore = useAuthStore();
+      
+      try {
+        await axios.delete(`http://localhost/api/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`
+        }
+      })
+      this.$emit('delete-post', postId);
+
+    }
+    catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  }
+}
 };
 </script>
 
@@ -107,6 +132,19 @@ export default {
   justify-content: space-between;
   font-size: 0.8em;
   color: #888;
+}
+
+.btn-delete {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  background-color: #333;
 }
 
 @media (max-width: 640px) {
