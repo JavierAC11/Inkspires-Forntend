@@ -120,7 +120,7 @@ export default {
   max-width: 100%;
   margin: 10px;
   padding: 20px;
-  min-height: 70vh;
+  min-height: 78vh;
 }
 
 .profile-sections {

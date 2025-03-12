@@ -208,7 +208,7 @@ export default {
   min-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  min-height: 75vh;
+  min-height: 78vh;
 }
 
 .form-group {

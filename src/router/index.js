@@ -34,7 +34,13 @@ const routes = [
       path: '/portfolio/:id',
       name: 'portfolio',
       component: () => import('@/views/Portfolio.vue')
-    },  ]
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: () => import('@/views/NotFound.vue')
+    }
+    ]
   },
   {
     path: "/userProfile",
