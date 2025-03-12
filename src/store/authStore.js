@@ -79,5 +79,11 @@ export const useAuthStore = defineStore('auth', {
   },
   persist: {
     enabled: true,
+    strategies: [
+      {
+        key: 'auth',
+        storage: localStorage
+      }
+    ]
   },
 })
