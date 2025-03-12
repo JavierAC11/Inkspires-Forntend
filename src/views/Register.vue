@@ -114,7 +114,8 @@ export default {
         ubicacion: ""
       },
       errors: {},
-      autocomplete: null
+      autocomplete: null,
+      apiKey: import.meta.env.VITE_API_GOOGLE_MAPS_KEY
     };
   },
   mounted() {
@@ -134,7 +135,7 @@ export default {
   methods: {
     async initAutocomplete() {
       const loader = new Loader({
-        apiKey: "AIzaSyB_vnEk5emcWj3SR2pcK6qo5lYE1KB_ghU",
+        apiKey: this.apiKey,
         libraries: ["places"]
       });
 
@@ -383,5 +384,15 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+@media screen and (max-width: 768px) {
+  .register-form {
+    padding: 1rem;
+  }
+
+  .register-container {
+    min-height: 80vh;
+  }
+  
 }
 </style>

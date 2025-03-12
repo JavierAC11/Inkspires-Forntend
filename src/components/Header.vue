@@ -1,8 +1,10 @@
 <template>
   <header class="header">
-    <div class="logo">
+    <!-- Logo que controla la visibilidad del menú -->
+    <div class="logo" >
       <img src="../assets/Logo.png" alt="Inkspires Logo" />
     </div>
+    <!-- Menú -->
     <nav class="nav-menu">
       <ul v-if="!isLogin">
         <li><router-link to="/">Inicio</router-link></li>
@@ -22,6 +24,7 @@
   </header>
 </template>
 
+
 <script>
 import { getMe } from '@/helpers/getMe';
 import { useAuthStore } from '@/store/authStore';
@@ -31,11 +34,11 @@ export default {
   name: "Header",
   data() {
     return {
-      currentUser: null
-    }
+      currentUser: null,
+    };
   },
   computed: {
-    ...mapState(useAuthStore, ['isLogin'])
+    ...mapState(useAuthStore, ['isLogin']),
   },
   mounted() {
     if (this.isLogin) {
@@ -50,9 +53,10 @@ export default {
       const authStore = useAuthStore();
       authStore.logout();
       this.$router.push('/login');
-    }
+    },
   },
 };
+
 </script>
 
 <style scoped>
@@ -73,8 +77,13 @@ export default {
   border: 2px solid #ffffff;
 }
 
+/* Estilos del menú */
 .nav-menu ul {
-  display: flex;
+  display: flex; /* Ocultar por defecto */
+}
+
+
+.nav-menu ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -82,38 +91,28 @@ export default {
 
 .nav-menu li {
   margin-left: 1.5rem;
-  cursor: pointer;
 }
 
 .nav-menu a {
   color: #ffffff;
   text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: color 0.3s ease;
 }
 
 .nav-menu a:hover {
   color: #e0e0e0;
 }
 
+/* Estilos para responsive */
 @media (max-width: 768px) {
   .header {
-    flex-direction: column;
+    flex-direction: column; /* Alinear verticalmente en responsive */
     padding: 1rem;
-  }
-
-  .nav-menu {
-    margin-top: 1rem;
-  }
-
-  .nav-menu ul {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav-menu li {
-    margin: 0.5rem 0;
-  }
+    gap: .5rem; /* Espaciado entre logo y menú */
+    align-items: center; /* Centrar contenido */
+    text-align: center; /* Centrar texto */
+    position: relative; /* Para manejar el menú */
+    z-index: auto; 
 }
+}
+
 </style>

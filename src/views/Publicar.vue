@@ -205,7 +205,7 @@ export default {
 }
 
 .publicar-post {
-  min-width: 1000px;
+  min-width: 600px;
   margin: 0 auto;
   padding: 20px;
   min-height: 75vh;
@@ -270,4 +270,30 @@ select {
   color: red;
   margin-top: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .publicar-post {
+    min-width: 400px;
+    padding: 10px;
+  }
+
+  
+}
+
+@media screen and (max-width: 480px) {
+  .publicar-post {
+    min-width: 300px;
+  }
+
+  input[type="file"],
+  textarea,
+  select {
+    max-width: 350px;
+    margin: auto;
+  }
+  
+
+  
+}
+
 </style>

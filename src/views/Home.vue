@@ -31,6 +31,7 @@ import { getPosts } from '@/helpers/getPosts'
 export default {
   name: 'Home',
   components: {
+    
     PostGrid,
     Filtro
   },

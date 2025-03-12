@@ -167,4 +167,11 @@ button:hover {
   text-align: center;
   padding: 20px;
 }
+
+@media screen and (max-width: 480px) {
+  .profile-sections {
+    flex-direction: column;
+  }
+  
+}
 </style>

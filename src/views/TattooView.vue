@@ -84,7 +84,7 @@
     .tattoo-info-container {
     display: flex;
     justify-content: space-between;
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 40px 20px;
     gap: 40px;
@@ -198,6 +198,19 @@
 
 .portfolio-button:active {
   transform: translateY(2px); /* Efecto de presión */
+}
+
+@media screen and (max-width: 968px) {
+  .tattoo-section, .artist-section {
+    max-width: 90%;
+    padding: 20px; /* Espacio interno de las secciones */
+  }
+  
+  .portfolio-button {
+    padding: 8px 16px; /* Espacio interno del botón */
+    font-size: 14px; /* Tamaño de la fuente */
+  }
+  
 }
 
     </style>
