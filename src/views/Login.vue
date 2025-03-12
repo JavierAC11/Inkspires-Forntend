@@ -41,6 +41,15 @@ import Swal from 'sweetalert2';
 
 export default {
   name: "Login",
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {String} email - Correo electrónico
+   * @property {String} password - Contraseña
+   * @property {String} emailError - Error del correo electrónico
+   * @property {String} passwordError - Error de la contraseña
+   * @property {String} loginError - Error del login
+   */
   data() {
     return {
       email: '',
@@ -50,9 +59,18 @@ export default {
       loginError: false
     }
   },
+  /**
+   * Propiedades computadas
+   * @returns {Object}
+   * @property {Boolean} isLogin - Indica si el usuario está logueado
+   */
   computed: {
-    ...mapState(useAuthStore, ['isLogin', 'user'])
+    ...mapState(useAuthStore, ['isLogin'])
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   * Redirige al usuario a la página de perfil si ya está logueado
+   */
   setup() {
     const { isLogin } = useAuthStore();
     if (isLogin) {
@@ -60,6 +78,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Maneja el envío del formulario
+     */
     async handleSubmit() {
 
       if (!this.emailError && !this.passwordError) {
@@ -85,6 +106,10 @@ export default {
         this.showError('Por favor, completa todos los campos correctamente.');
       }
     },
+    /**
+     * Maneja el blur de los inputs
+     * @param {Event} event - Evento
+     */
     handleBlur(event) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -104,6 +129,10 @@ export default {
         }
       }
     },
+    /**
+     * Muestra un mensaje de error
+     * @param {String} message - Mensaje de error
+     */
     showError(message) {
       console.log("error: "+ message)
       Swal.fire({

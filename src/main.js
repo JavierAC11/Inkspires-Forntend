@@ -10,18 +10,21 @@ import { FcLike } from "oh-vue-icons/icons";
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 
 
-
+// Agrega los iconos que necesitas
 addIcons(FcLikePlaceholder)
 addIcons(FcLike)
 
-// Si necesitas acceder a la variable de entorno en la aplicación, por ejemplo:
-
+// Crea la instancia de Pinia y úsala en la app
 const pinia = createPinia()
+
+// Agrega el plugin de persistencia
 pinia.use(piniaPluginPersist)
 
+// Crea la app
 const app = createApp(App)
 
+// Registra el componente global
 app.component("VIcon", OhVueIcon);
-app.use(router).use(pinia).mount('#app')
 
-// Opcional: puedes configurar una propiedad global si la necesitas en varios componentes
+// Usa el router y Pinia
+app.use(router).use(pinia).mount('#app')

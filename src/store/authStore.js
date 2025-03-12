@@ -4,38 +4,48 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router'
 
-
-
+/**
+ * Store de autenticación
+ * @returns {Store}
+ */
 export const useAuthStore = defineStore('auth', {
   
-    
+    /**
+     * Estados que se manejan en el store
+     */
   state: () => ({
     token: null,
     isLogin: false,
   }),
   actions: {
     
+    /**
+     * Función para hacer login
+     * @param {object} credentials
+     * 
+     */
     async login(credentials) {
       const apiUrl = import.meta.env.VITE_API_URL;
 
         try{
-            console.log(credentials)
         const response = await axios.post(`${apiUrl}/login`, credentials);
           
         this.token = response.data.access_token;
         this.isLogin = true;
-            console.log(this.token)
     }
         catch(error){
           throw error; 
         }
     },
 
+    /**
+     * Función para registrar un usuario
+     * @param {object} userData 
+     */
     async register(userData) {
       const apiUrl = import.meta.env.VITE_API_URL;
 
       try {
-        console.log('Datos a enviar:', userData);
         const response = await axios.post(`${apiUrl}/register`, userData, {
           headers: {
             'Content-Type': 'application/json'
@@ -56,6 +66,9 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    /**
+     * Función para hacer logout
+     */
     async logout() {
       const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -77,7 +90,11 @@ export const useAuthStore = defineStore('auth', {
         
     },
   },
-  persist: {
+  /**
+   * Persistencia de datos
+   * @type {Store} 
+   */
+   persist: {
     enabled: true,
     strategies: [
       {

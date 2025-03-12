@@ -14,6 +14,12 @@
 import PostsCards from './PostsCards.vue';
 
 export default {
+  /**
+   * Propiedades que recibe el componente
+   * 
+   * @prop {Array} posts - Posts a mostrar
+   * @prop {Boolean} showDeleteButton - Indica si se muestra el botón de eliminar
+   */
   props: {
     posts: {
       type: Array,
@@ -24,10 +30,18 @@ export default {
       default: false
     }
   },
+  /**
+   * Componentes del componente
+   */
   components: {
     PostsCards,
   }
   ,methods: {
+    /**
+     * Elimina un post
+     * 
+     * @param postId 
+     */
     handleDeletePost(postId) {
       this.$emit('delete-post', postId);
     }

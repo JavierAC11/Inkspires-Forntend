@@ -30,12 +30,27 @@ import { getPosts } from '@/helpers/getPosts'
 
 export default {
   name: 'Home',
+  /**
+   * Componentes del componente
+   */
   components: {
     
     PostGrid,
     Filtro
   },
+
+  /**
+   * Propiedades del componente
+   * 
+   * @prop {Array} posts - Posts a mostrar
+   * @prop {Boolean} loading - Indica si se está cargando más posts
+   * @prop {Boolean} hasMore - Indica si hay más posts para cargar
+   * @prop {Number} page - Página actual
+   * @prop {Array} filteredPosts - Posts filtrados
+   * @prop {Boolean} filtersApplied - Indica si se han aplicado filtros
+   */
   data() {
+
     return {
       posts: [],
       filteredPosts: [],
@@ -45,14 +60,23 @@ export default {
       filtersApplied: false
     }
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   */
   mounted() {
     this.loadPosts()
     window.addEventListener('scroll', this.handleScroll)
   },
+  /**
+   * Método que se ejecuta al desmontar el componente
+   */
   unmounted() {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    /**
+     * Carga los posts
+     */
     async loadPosts() {
       if (this.loading || !this.hasMore) return
 
@@ -69,6 +93,9 @@ export default {
         this.loading = false
       }
     },
+    /**
+     * Maneja el scroll de la página
+     */
     handleScroll() {
       const loadingTrigger = this.$refs.loadingTrigger
       if (!loadingTrigger) return
@@ -78,6 +105,11 @@ export default {
         this.loadPosts()
       }
     },
+    /**
+     * Aplica los filtros a los posts
+     * 
+     * @param {Object} filters - Filtros a aplicar
+     */
     applyFiltersToPosts(filters) {
     console.log('Filtros aplicados:', filters);
     this.filteredPosts = this.posts.filter(post => {

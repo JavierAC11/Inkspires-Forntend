@@ -24,10 +24,24 @@ import { OhVueIcon } from "oh-vue-icons";
 import { AiAcademiaSquare } from "oh-vue-icons/icons";
 
 export default {
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} post - Post al que se le dará like
+   * @property {Number} likesCount - Cantidad de likes del post
+   */
   props: {
     post: Object,
     likesCount: Number,
   },
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Boolean} hasLike - Indica si el usuario ha dado like al post
+   * @property {String} apiUrl - URL de la API
+   * @property {Boolean} isLogin - Indica si el usuario está logueado
+   * @property {String} token - Token de autenticación
+   */
   data() {
     return {
       hasLike: null,
@@ -38,10 +52,21 @@ export default {
   computed: {
     ...mapState(useAuthStore, ['isLogin', 'token']),
   },
+
+  /**
+   * Método que se ejecuta al montar el componente
+   * Obtiene el estado del like del post
+   */
   async mounted() {
     await this.init();
   },
   methods: {
+    /**
+     * Inicializa el componente
+     * Obtiene el estado del like del post
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al obtener el estado del like
+     */
     async init() {
       if (!this.isLogin) return;
       
@@ -52,6 +77,13 @@ export default {
         console.error('Error al obtener el estado del like:', error);
       }
     },
+    /**
+     * Maneja el like del post
+     * @param postId - ID del post
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al dar/quitar like
+     * @throws {Error} - El usuario ya ha dado like a este post
+     */
     async handleLike(postId) {
       try {
         if (!this.hasLike) {
@@ -86,6 +118,11 @@ export default {
       }
     },
   },
+  /**
+   * Componentes que utiliza el componente
+   * @returns {Object}
+   * @property {Object} v-icon - Iconos de OhVue
+   */
   components: {
     "v-icon": OhVueIcon,
   },
@@ -98,13 +135,5 @@ button {
   border: none;
   cursor: pointer;
 }
-/*
-button i {
-  font-size: 1.2em;
-  color: #007bff;
-}
 
-button i.fa-thumbs-down {
-  color: #dc3545;
-}*/
 </style>

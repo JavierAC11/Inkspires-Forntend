@@ -15,20 +15,11 @@
     <p><strong>Descripción:</strong> {{ user.data.tatuador.descripcion }}</p>
   </div>
 </div>
-
-    <!--<div class="profile-actions">
-      <button @click="editProfile">Editar perfil</button>
-    </div>-->
-
     <div class="user-posts">
       <h3>Mis Posts</h3>
       <div v-if="userPosts.length > 0" class="posts-grid">
         <PostGrid :posts="userPosts" :show-delete-button="true" @delete-post="handleDeletePost" />
 
-        <!--<div v-for="post in userPosts" :key="post.id" class="post-card">
-          <img :src="post.imagen_url" :alt="post.descripcion">
-          <p>{{ post.descripcion }}</p>
-        </div>-->
       </div>
       <p v-else>Aún no has publicado ningún post.</p>
       <div ref="loadingTrigger" class="loading-trigger">
@@ -46,6 +37,15 @@ import PostGrid from '@/components/PostGrid.vue';
 
 export default {
   name: 'UserProfile',
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} user - Información del usuario
+   * @property {Array} userPosts - Posts del usuario
+   * @property {Number} page - Página actual
+   * @property {Boolean} loading - Indica si se están cargando los posts
+   * @property {Boolean} hasMore - Indica si hay más posts para cargar
+   */
   data() {
     return {
       user: null,
@@ -55,14 +55,27 @@ export default {
       hasMore: true
     }
   },
+  /**
+   * Método que se ejecuta cuando el componente se monta
+   * @returns {Promise<void>}
+   * @throws {Error} - Error al cargar los datos del usuario
+   */
   mounted() {
     this.loadUserData();
     window.addEventListener('scroll', this.handleScroll);
   },
+  /**
+   * Método que se ejecuta cuando el componente se desmonta
+   */
   unmounted() {
     window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
+    /**
+     * Carga los datos del usuario
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al cargar los datos del usuario
+     */
     async loadUserData() {
       try {
         this.user = await getMe();
@@ -72,6 +85,11 @@ export default {
         console.error('Error al cargar datos del usuario:', error);
       }
     },
+    /**
+     * Carga los posts del usuario
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al cargar los posts del usuario
+     */
     async loadUserPosts() {
       if (this.loading || !this.hasMore) return;
 
@@ -93,6 +111,9 @@ export default {
         this.loading = false;
       }
     },
+    /**
+     * Maneja el scroll de la página
+     */
     handleScroll() {
       const loadingTrigger = this.$refs.loadingTrigger;
       if (!loadingTrigger) return;
@@ -102,13 +123,23 @@ export default {
         this.loadUserPosts();
       }
     },
+    /**
+     * Redirige al usuario a la página de edición de perfil
+     */
     editProfile() {
       this.$router.push('/edit-profile');
     },
+    /**
+     * Maneja la eliminación de un post
+     * @param {Number} postId - ID del post
+     */
     handleDeletePost(postId) {
       this.userPosts = this.userPosts.filter(post => post.id !== postId);
     }
   },
+  /**
+   * Componentes del componente
+   */
   components: {
     PostGrid
   }

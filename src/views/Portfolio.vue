@@ -25,11 +25,18 @@
   
   <script>
   import axios from 'axios';
-import { useAuthStore } from '@/store/authStore';
-import PostGrid from '@/components/PostGrid.vue';
+  import PostGrid from '@/components/PostGrid.vue';
 
 export default {
   name: 'PortfolioView',
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} tatuador - Información del tatuador
+   * @property {Object} usuario - Información del usuario
+   * @property {Array} portfolioWorks - Trabajos del portafolio
+   * @property {String} apiUrl - URL de la API
+   */
   data() {
     return {
       tatuador: {},
@@ -38,8 +45,11 @@ export default {
       apiUrl: import.meta.env.VITE_API_URL
     }
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   * Carga la información del tatuador y sus trabajos del portafolio
+   */
   async mounted() {
-    const authStore = useAuthStore();
     const tattooerId = this.$route.params.id;
     
     try {
@@ -57,6 +67,9 @@ export default {
       console.error('Error al cargar datos:', error);
     }
   },
+  /**
+   * Componentes del componente
+   */
   components: {
     PostGrid
   }

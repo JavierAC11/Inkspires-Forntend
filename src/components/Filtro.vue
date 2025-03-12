@@ -30,7 +30,15 @@
   
   <script>
   export default {
+
     name: 'Filtro',
+
+    /**
+     * Propiedades que recibe el componente
+     * 
+     * @prop {Object} filters- Filtros aplicados
+     * @prop {Boolean} showFilters - Indica si se muestra el filtro
+     */
     data() {
       return {
         filters: {
@@ -41,9 +49,16 @@
       }
     },
     methods: {
+      /**
+       * Muestra u oculta los filtros
+       */
       toggleFilters() {
         this.showFilters = !this.showFilters;
       },
+
+      /**
+       * Aplica los filtros seleccionados
+       */
       applyFilters() {
         this.$emit('apply-filters', this.filters);
         this.showFilters = false;

@@ -16,12 +16,26 @@ import router from '@/router';
 export default {
 
   name: 'PublicLayout',
+
+  /**
+   * Propiedades del componente
+   */
   components: {
     Header,
     Footer
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   */
   setup() {
+    /**
+     * Store de autenticación
+     */
     const { isLogin } = useAuthStore();
+
+    /**
+     * Redirecciona al login si el usuario no está logueado
+     */
     onMounted(() => {
       if (!isLogin) {
         router.push('/login');

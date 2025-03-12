@@ -4,6 +4,17 @@ import Home from '@/views/Home.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
+/**
+ * @typedef {Object} RouteRecordRaw
+ * @property {string} path - Ruta del componente.
+ * @property {string} name - Nombre del componente.
+ */
+
+/**
+ * Lista de rutas.
+ * @type {RouteRecordRaw[]}
+ */
+
 const routes = [
   {path: '/', 
   component: PublicLayout,
@@ -60,6 +71,10 @@ const routes = [
   }
 ]
 
+/**
+ * Instancia del router
+ * @type {router}
+ */
 const router = createRouter({
   history: createWebHistory(""),
   routes

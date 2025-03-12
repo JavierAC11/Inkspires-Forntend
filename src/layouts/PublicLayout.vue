@@ -12,6 +12,9 @@
   
   export default {
     name: 'PublicLayout',
+    /**
+     * Componentes del componente
+     */
     components: {
       Header,
       Footer

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/Login.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/Login.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div class="login-container">
+    &lt;form @submit.prevent="handleSubmit" class="login-form">
+      &lt;h2>Iniciar sesión&lt;/h2>
+      &lt;div class="form-group">
+        &lt;label for="email">Correo electrónico&lt;/label>
+        &lt;input 
+          id="email" 
+          @blur="handleBlur($event)"
+          v-model="email" 
+          type="email" 
+          placeholder="ejemplo@dominio.com" 
+        />
+        &lt;p class="error" v-if="emailError">{{ emailError }}&lt;/p>
+      &lt;/div>
+      &lt;div class="form-group">
+        &lt;label for="password">Contraseña&lt;/label>
+        &lt;input 
+          id="password" 
+          @blur="handleBlur($event)"
+          v-model="password" 
+          type="password" 
+          placeholder="Contraseña" 
+          
+        />
+        &lt;p v-if="passwordError" class="error">{{ passwordError }}&lt;/p>
+      &lt;/div>
+      &lt;p v-if="loginError" class="error">{{ loginErrorMessage }}&lt;/p>
+      &lt;button type="submit" class="login-button">Entrar&lt;/button>
+    &lt;/form>
+  &lt;/div>
+&lt;/template>
+
+
+
+&lt;script>
+import { mapState } from 'pinia';
+import { useAuthStore } from '@/store/authStore';
+import router from '@/router';
+import Swal from 'sweetalert2';
+
+export default {
+  name: "Login",
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {String} email - Correo electrónico
+   * @property {String} password - Contraseña
+   * @property {String} emailError - Error del correo electrónico
+   * @property {String} passwordError - Error de la contraseña
+   * @property {String} loginError - Error del login
+   */
+  data() {
+    return {
+      email: '',
+      password: '',
+      emailError: false,
+      passwordError: false,
+      loginError: false
+    }
+  },
+  /**
+   * Propiedades computadas
+   * @returns {Object}
+   * @property {Boolean} isLogin - Indica si el usuario está logueado
+   */
+  computed: {
+    ...mapState(useAuthStore, ['isLogin'])
+  },
+  /**
+   * Método que se ejecuta al montar el componente
+   * Redirige al usuario a la página de perfil si ya está logueado
+   */
+  setup() {
+    const { isLogin } = useAuthStore();
+    if (isLogin) {
+      router.push('/userProfile');
+    }
+  },
+  methods: {
+    /**
+     * Maneja el envío del formulario
+     */
+    async handleSubmit() {
+
+      if (!this.emailError &amp;&amp; !this.passwordError) {
+        if(this.email || this.password){
+          const authStore = useAuthStore();
+        try {
+          await authStore.login({
+            email: this.email,
+            password: this.password
+          });
+          router.push('/userProfile');
+        } catch (error) {
+          this.showError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
+          this.email = '';
+          this.password = '';
+        }
+        }
+        else{
+          this.showError('Por favor, completa todos los campos correctamente.');
+        }
+        
+      } else {
+        this.showError('Por favor, completa todos los campos correctamente.');
+      }
+    },
+    /**
+     * Maneja el blur de los inputs
+     * @param {Event} event - Evento
+     */
+    handleBlur(event) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+      if (event.target.id === 'email') {
+        if (this.email === '') {
+          this.emailError = "Email invalido";
+        } else if (!emailRegex.test(this.email)) {
+          this.emailError = "Email invalido";
+        } else {
+          this.emailError = false;
+        }
+      } else if (event.target.id === 'password') {
+        if (this.password === '') {
+          this.passwordError = "La contraseña no puede estar vacia";
+        } else {
+          this.passwordError = false;
+        }
+      }
+    },
+    /**
+     * Muestra un mensaje de error
+     * @param {String} message - Mensaje de error
+     */
+    showError(message) {
+      console.log("error: "+ message)
+      Swal.fire({
+        title: '¡Error!',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
+    }
+  }
+}
+&lt;/script>
+
+
+&lt;style scoped>
+.error {
+  color: #D32F2F;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 83vh;
+  background-color: #f5f5f5;
+}
+
+.login-form {
+  background-color: #fff;
+  padding: 2rem;
+  padding-top: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.form-group input {
+  width: 93%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #333;
+}
+&lt;/style>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Mar 12 2025 19:09:14 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

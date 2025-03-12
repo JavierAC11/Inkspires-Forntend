@@ -22,6 +22,13 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
 export default {
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} post - Post a mostrar
+   * @property {Boolean} showDeleteButton - Indica si se muestra el botón de eliminar
+   * @property {String} apiUrl - URL de la API
+   */
   data() {
     return {
       apiUrl: import.meta.env.VITE_API_URL
@@ -37,21 +44,44 @@ export default {
       default: false
     }
   },
+  /**
+   * Componentes del componente
+   */
   components: {
     LikeButton,
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   * @returns {Object}
+   * @property {Function} navigateToPost - Navega a la página de un post
+   * @property {Function} truncateText - Trunca un texto
+   * @property {Function} formatDate - Formatea una fecha
+   */
   setup() {
     const router = useRouter();
 
+    /**
+     * Navega a la página de un post
+     * @param postId 
+     */
     const navigateToPost = (postId) => {
       router.push(`/post/${postId}`);
     };
 
+    /**
+     * Trunca un texto
+     * @param text 
+     * @param maxLength 
+     */
     const truncateText = (text, maxLength) => {
       if (text.length <= maxLength) return text;
       return text.substr(0, maxLength) + '...';
     };
 
+    /**
+     * Formatea una fecha
+     * @param dateString 
+     */
     const formatDate = (dateString) => {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
@@ -64,6 +94,12 @@ export default {
     };
   },
   methods: {
+    /**
+     * Elimina un post
+     * @param postId 
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al eliminar el post
+     */
     async handleDelete(postId) {
 
       const authStore = useAuthStore();

@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+/**
+ * Funcion que obtiene el estado de like de un
+ * @param {number} postId
+ * @param {string} token
+ * @returns {Promise<boolean>}
+ */
 export const  getHasLike = async (postId, token) => {
     const apiUrl = import.meta.env.VITE_API_URL;
   

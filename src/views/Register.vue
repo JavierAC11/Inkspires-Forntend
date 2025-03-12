@@ -101,6 +101,22 @@ import Swal from "sweetalert2";
 
 export default {
   name: "Register",
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} form - Datos del formulario
+   * @property {String} form.nombre - Nombre del usuario
+   * @property {String} form.email - Correo electrónico del usuario
+   * @property {String} form.password - Contraseña del usuario
+   * @property {Boolean} form.esTatuador - Indica si el usuario es tatuador
+   * @property {String} form.estilo - Estilo de tatuaje del tatuador
+   * @property {Number} form.precioMedio - Precio medio del tatuador
+   * @property {String} form.descripcion - Descripción del tatuador
+   * @property {String} form.ubicacion - Ubicación del tatuador
+   * @property {Object} errors - Errores de validación
+   * @property {Object} autocomplete - Autocompletado de Google Maps
+   * @property {String} apiKey - Clave de la API de Google Maps
+   */
   data() {
     return {
       form: {
@@ -118,11 +134,19 @@ export default {
       apiKey: import.meta.env.VITE_API_GOOGLE_MAPS_KEY
     };
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   */
   mounted() {
     if (this.form.esTatuador) {
       this.initAutocomplete();
     }
   },
+  /**
+   * Observador que se ejecuta al cambiar el valor de `form.esTatuador`
+   * @param {Boolean} newValue - Nuevo valor de `form.esTatuador`
+   * @returns {void}
+   */
   watch: {
     'form.esTatuador'(newValue) {
       if (newValue) {
@@ -133,6 +157,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Inicializa el autocompletado de Google Maps
+     */
     async initAutocomplete() {
       const loader = new Loader({
         apiKey: this.apiKey,
@@ -157,6 +184,10 @@ export default {
         }
       });
     },
+    /**
+     * Maneja el evento `blur` de los campos del formulario
+     * @param {Event} event - Evento de cambio de foco
+     */
     handleBlur(event) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -196,6 +227,9 @@ export default {
       
         
     },
+    /**
+     * Maneja el envío del formulario
+     */
     async handleSubmit() {
       console.log('Registrando usuario con:', this.form);
 
@@ -234,6 +268,10 @@ export default {
         this.showError("Por favor, completa todos los campos correctamente.");
       }
     },
+    /**
+     * Muestra un mensaje de error
+     * @param {String} message - Mensaje de error
+     */
     showError(message) {
       console.log("error: "+ message)
       Swal.fire({

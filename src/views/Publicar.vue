@@ -57,6 +57,22 @@ import Swal from 'sweetalert2';
 
 export default {
   name: 'PublicarPost',
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {File} imagen - Imagen del tatuaje
+   * @property {String} imagePreview - Vista previa de la imagen
+   * @property {String} descripcion - Descripción del tatuaje
+   * @property {String} estilo - Estilo del tatuaje
+   * @property {String} tamano - Tamaño del tatuaje
+   * @property {Boolean} isLoading - Indica si se está publicando
+   * @property {String} error - Mensaje de error
+   * @property {String} imageError - Mensaje de error de la imagen
+   * @property {String} descripcionError - Mensaje de error de la descripción
+   * @property {String} estiloError - Mensaje de error del estilo
+   * @property {String} tamanoError - Mensaje de error del tamaño
+   * @property {String} apiUrl - URL de la API
+   */
   data() {
     return {
       imagen: null,
@@ -75,6 +91,10 @@ export default {
     }
   },
   methods: {
+    /**
+     * Maneja la subida de la imagen
+     * @param {Event} event - Evento de cambio
+     */
     handleImageUpload(event) {
       const file = event.target.files[0];
       const allowedFormats = ['image/jpeg', 'image/png'];
@@ -98,6 +118,9 @@ export default {
       this.imagePreview = URL.createObjectURL(file);
       this.imageError = null;
     },
+    /**
+     * Valida la imagen
+     */
     validateImage() {
       if (!this.imagen) {
         this.imageError = 'Debes seleccionar una imagen.';
@@ -105,10 +128,16 @@ export default {
         this.imageError = null;
       }
     },
+    /**
+     * Limpia la imagen
+     */
     clearImage() {
       this.imagen = null
       this.imagePreview = null
     },
+    /**
+     * Valida la descripción
+     */
     validateDescripcion() {
       if (!this.descripcion) {
         this.descripcionError = 'La descripción es requerida.';
@@ -116,6 +145,9 @@ export default {
         this.descripcionError = null;
       }
     },
+    /**
+     * Valida el estilo
+     */
     validateEstilo() {
       if (!this.estilo) {
         this.estiloError = 'El estilo es requerido.';
@@ -123,6 +155,9 @@ export default {
         this.estiloError = null;
       }
     },
+    /**
+     * Valida el tamaño
+     */
     validateTamano() {
       if (!this.tamano) {
         this.tamanoError = 'El tamaño es requerido.';
@@ -130,6 +165,9 @@ export default {
         this.tamanoError = null;
       }
     },
+    /**
+     * Maneja el envío del formulario
+     */
     async handleSubmit() {
       this.validateImage();
       this.validateDescripcion();
@@ -183,6 +221,10 @@ export default {
         this.isLoading = false;
       }
     },
+    /**
+     * Muestra un mensaje de error
+     * @param {String} message - Mensaje de error
+     */
     showError(message) {
       console.log("error: "+ message)
       Swal.fire({

@@ -32,14 +32,29 @@ import { mapState } from 'pinia';
 
 export default {
   name: "Header",
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} currentUser - Usuario actual
+   * 
+   */
   data() {
     return {
       currentUser: null,
     };
   },
+  /**
+   * Propiedades computadas
+   * @returns {Object}
+   * @property {Boolean} isLogin - Indica si el usuario está logueado
+   */
   computed: {
     ...mapState(useAuthStore, ['isLogin']),
   },
+  /**
+   * Método que se ejecuta al montar el componente
+   * Obtiene los datos del usuario actual
+   */
   mounted() {
     if (this.isLogin) {
       const authStore = useAuthStore();
@@ -49,6 +64,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Cierra la sesión del usuario
+     */
     logout() {
       const authStore = useAuthStore();
       authStore.logout();

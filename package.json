@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
+    "@jsdoc/salty": "^1.0.0",
     "@vueuse/core": "^12.7.0",
     "axios": "^1.8.1",
     "oh-vue-icons": "^1.0.0-rc3",
@@ -22,7 +23,14 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@jsdoc/salty": "^0.2.9",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/compiler-sfc": "^3.5.13",
+    "better-docs": "^2.7.3",
+    "jsdoc": "^4.0.4",
+    "jsdoc-tsimport-plugin": "^1.0.5",
+    "jsdoc-vuejs": "^4.0.0",
+    "minami": "^1.2.3",
     "vite": "^6.0.11",
     "vite-plugin-vue-devtools": "^7.7.1"
   }

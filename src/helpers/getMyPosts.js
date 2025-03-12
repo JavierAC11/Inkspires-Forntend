@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+/**
+ * Funcion que obtiene los posts de un usuario
+ * @param {number} userId
+ * @param {number} page
+ * @param {number} perPage
+ * @returns {Promise<object>}
+ */
+
 export const getMyPosts = async (userId, page = 1, perPage = 10) => {
     const apiUrl = import.meta.env.VITE_API_URL;
   

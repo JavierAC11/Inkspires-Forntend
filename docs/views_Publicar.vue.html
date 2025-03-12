@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/Publicar.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/Publicar.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div class="publicar-post">
+    &lt;h2>Publicar nuevo post&lt;/h2>
+    &lt;form @submit.prevent="handleSubmit">
+      &lt;div class="form-group">
+  &lt;label for="imagen">Imagen del tatuaje&lt;/label>
+  &lt;input type="file" id="imagen" @change="handleImageUpload" @blur="validateImage" accept="image/jpeg, image/png">
+  &lt;img v-if="imagePreview" :src="imagePreview" alt="Vista previa" class="image-preview">
+  &lt;button v-if="imagePreview" @click.prevent="clearImage" class="btn-clear">Eliminar imagen&lt;/button>
+  &lt;p id="info">Se admiten archivos JPEG, JPG y PNG con un tamaño máximo de 2 MB.&lt;/p>
+  &lt;p v-if="imageError" class="error-message">{{ imageError }}&lt;/p>
+&lt;/div>
+
+      
+      &lt;div class="form-group">
+        &lt;label for="descripcion">Descripción&lt;/label>
+        &lt;textarea id="descripcion" v-model="descripcion" @blur="validateDescripcion" rows="4">&lt;/textarea>
+        &lt;p v-if="descripcionError" class="error-message">{{ descripcionError }}&lt;/p>
+      &lt;/div>
+      
+      &lt;div class="form-group">
+        &lt;label for="estilo">Estilo de tatuaje&lt;/label>
+        &lt;select id="estilo" v-model="estilo" @blur="validateEstilo" required>
+          &lt;option value="">Selecciona un estilo&lt;/option>
+          &lt;option value="tradicional">Tradicional&lt;/option>
+          &lt;option value="realista">Realista&lt;/option>
+          &lt;option value="neotradicional">Neotradicional&lt;/option>
+          &lt;option value="blackwork">Blackwork&lt;/option>
+        &lt;/select>
+        &lt;p v-if="estiloError" class="error-message">{{ estiloError }}&lt;/p>
+      &lt;/div>
+      
+      &lt;div class="form-group">
+        &lt;label for="tamano">Tamaño&lt;/label>
+        &lt;select id="tamano" v-model="tamano" @blur="validateTamano" required>
+          &lt;option value="">Selecciona un tamaño&lt;/option>
+          &lt;option value="pequeño">Pequeño&lt;/option>
+          &lt;option value="mediano">Mediano&lt;/option>
+          &lt;option value="grande">Grande&lt;/option>
+        &lt;/select>
+        &lt;p v-if="tamanoError" class="error-message">{{ tamanoError }}&lt;/p>
+      &lt;/div>
+      
+      &lt;button type="submit" class="btn-publicar" :disabled="isLoading">
+        {{ isLoading ? 'Publicando...' : 'Publicar' }}
+      &lt;/button>
+    &lt;/form>
+    &lt;p v-if="error" class="error-message">{{ error }}&lt;/p>
+  &lt;/div>
+&lt;/template>
+
+
+&lt;script>
+import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
+import Swal from 'sweetalert2';
+
+export default {
+  name: 'PublicarPost',
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {File} imagen - Imagen del tatuaje
+   * @property {String} imagePreview - Vista previa de la imagen
+   * @property {String} descripcion - Descripción del tatuaje
+   * @property {String} estilo - Estilo del tatuaje
+   * @property {String} tamano - Tamaño del tatuaje
+   * @property {Boolean} isLoading - Indica si se está publicando
+   * @property {String} error - Mensaje de error
+   * @property {String} imageError - Mensaje de error de la imagen
+   * @property {String} descripcionError - Mensaje de error de la descripción
+   * @property {String} estiloError - Mensaje de error del estilo
+   * @property {String} tamanoError - Mensaje de error del tamaño
+   * @property {String} apiUrl - URL de la API
+   */
+  data() {
+    return {
+      imagen: null,
+      imagePreview: null,
+      descripcion: '',
+      estilo: '',
+      tamano: '',
+      isLoading: false,
+      error: null,
+      imageError: null,
+      descripcionError: null,
+      estiloError: null,
+      tamanoError: null,
+      apiUrl: import.meta.env.VITE_API_URL
+
+    }
+  },
+  methods: {
+    /**
+     * Maneja la subida de la imagen
+     * @param {Event} event - Evento de cambio
+     */
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      const allowedFormats = ['image/jpeg', 'image/png'];
+      const maxSize = 2 * 1024 * 1024; // 2 MB
+
+      if (!allowedFormats.includes(file.type)) {
+        this.imageError = 'Solo se admiten archivos JPEG o PNG.';
+        this.imagen = null;
+        this.imagePreview = null;
+        return;
+      }
+
+      if (file.size > maxSize) {
+        this.imageError = 'La imagen no puede superar los 2 MB.';
+        this.imagen = null;
+        this.imagePreview = null;
+        return;
+      }
+
+      this.imagen = file;
+      this.imagePreview = URL.createObjectURL(file);
+      this.imageError = null;
+    },
+    /**
+     * Valida la imagen
+     */
+    validateImage() {
+      if (!this.imagen) {
+        this.imageError = 'Debes seleccionar una imagen.';
+      } else {
+        this.imageError = null;
+      }
+    },
+    /**
+     * Limpia la imagen
+     */
+    clearImage() {
+      this.imagen = null
+      this.imagePreview = null
+    },
+    /**
+     * Valida la descripción
+     */
+    validateDescripcion() {
+      if (!this.descripcion) {
+        this.descripcionError = 'La descripción es requerida.';
+      } else {
+        this.descripcionError = null;
+      }
+    },
+    /**
+     * Valida el estilo
+     */
+    validateEstilo() {
+      if (!this.estilo) {
+        this.estiloError = 'El estilo es requerido.';
+      } else {
+        this.estiloError = null;
+      }
+    },
+    /**
+     * Valida el tamaño
+     */
+    validateTamano() {
+      if (!this.tamano) {
+        this.tamanoError = 'El tamaño es requerido.';
+      } else {
+        this.tamanoError = null;
+      }
+    },
+    /**
+     * Maneja el envío del formulario
+     */
+    async handleSubmit() {
+      this.validateImage();
+      this.validateDescripcion();
+      this.validateEstilo();
+      this.validateTamano();
+
+      if (this.imageError || this.descripcionError || this.estiloError || this.tamanoError) {
+        this.showError('Por favor, verifica los campos.');
+        return;
+      }
+      
+      this.isLoading = true;
+      this.error = null;
+      const authStore = useAuthStore();
+      
+      try {
+        const formData = new FormData()
+        formData.append('imgUrl', this.imagen)
+        formData.append('descripcion', this.descripcion)
+        formData.append('estilo', this.estilo)
+        formData.append('tamaño', this.tamano)
+        
+        const response = await axios.post(`${this.apiUrl}/posts`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${authStore.token}`
+          }
+        });
+        
+        console.log('Post creado:', response.data);
+        // Aquí puedes manejar la respuesta exitosa, como mostrar un mensaje o redirigir
+        this.$router.push('/userProfile'); // Redirige al perfil del usuario después de publicar
+        
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.error('No autorizado:', error.response.data)
+            this.error = 'No estás autorizado para publicar. Por favor, inicia sesión.';
+          } else if (error.response.status === 422) {
+            console.error('Error en los datos:', error.response.data)
+            this.error = 'Hubo un error en los datos. Por favor, verifica los campos.';
+          } else {
+            console.error('Error al publicar:', error.response.data)
+            this.error = 'Hubo un error al publicar el post. Por favor, intenta de nuevo.';
+          }
+        } else {
+          console.error('Error al publicar:', error)
+          this.error = 'Hubo un error al publicar el post. Por favor, intenta de nuevo.';
+        }
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    /**
+     * Muestra un mensaje de error
+     * @param {String} message - Mensaje de error
+     */
+    showError(message) {
+      console.log("error: "+ message)
+      Swal.fire({
+        title: '¡Error!',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
+    }
+  }
+}
+&lt;/script>
+
+
+&lt;style scoped>
+
+#info {
+    font-size: 12px;
+    color: #666;
+}
+
+.publicar-post {
+  min-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 78vh;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="file"], 
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.image-preview {
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+.btn-clear {
+  margin-top: 5px;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1a1a1a;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-clear:hover {
+  background-color: #333;
+}
+
+.btn-publicar {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-publicar:hover {
+  background-color: #333;
+}
+
+.btn-publicar:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .publicar-post {
+    min-width: 400px;
+    padding: 10px;
+  }
+
+  
+}
+
+@media screen and (max-width: 480px) {
+  .publicar-post {
+    min-width: 300px;
+  }
+
+  input[type="file"],
+  textarea,
+  select {
+    max-width: 350px;
+    margin: auto;
+  }
+  
+
+  
+}
+
+&lt;/style>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Mar 12 2025 19:09:14 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

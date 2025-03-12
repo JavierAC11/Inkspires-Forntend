@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/UserProfile.vue</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/UserProfile.vue</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div class="user-profile" v-if="user">
+    
+    &lt;div class="profile-sections">
+  &lt;div class="profile-section">
+    &lt;h3>Información básica&lt;/h3>
+    &lt;p>&lt;strong>Nombre:&lt;/strong> {{ user.data.nombre }}&lt;/p>
+    &lt;p>&lt;strong>Email:&lt;/strong> {{ user.data.email }}&lt;/p>
+  &lt;/div>
+  &lt;div v-if="user.data.esTatuador" class="profile-section">
+    &lt;h3>Información del tatuador&lt;/h3>
+    &lt;p>&lt;strong>Estilo:&lt;/strong> {{ user.data.tatuador.estilo }}&lt;/p>
+    &lt;p>&lt;strong>Precio medio:&lt;/strong> ${{ user.data.tatuador.precioMedio }}&lt;/p>
+    &lt;p>&lt;strong>Ubicación:&lt;/strong> {{ user.data.tatuador.ubicacion }}&lt;/p>
+    &lt;p>&lt;strong>Descripción:&lt;/strong> {{ user.data.tatuador.descripcion }}&lt;/p>
+  &lt;/div>
+&lt;/div>
+    &lt;div class="user-posts">
+      &lt;h3>Mis Posts&lt;/h3>
+      &lt;div v-if="userPosts.length > 0" class="posts-grid">
+        &lt;PostGrid :posts="userPosts" :show-delete-button="true" @delete-post="handleDeletePost" />
+
+      &lt;/div>
+      &lt;p v-else>Aún no has publicado ningún post.&lt;/p>
+      &lt;div ref="loadingTrigger" class="loading-trigger">
+        &lt;p v-if="loading">Cargando más posts...&lt;/p>
+        &lt;p v-if="!hasMore &amp;&amp; userPosts.length > 0">No hay más posts para mostrar.&lt;/p>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+&lt;/template>
+
+&lt;script>
+import { getMe } from '@/helpers/getMe';
+import { getMyPosts } from '@/helpers/getMyPosts';
+import PostGrid from '@/components/PostGrid.vue';
+
+export default {
+  name: 'UserProfile',
+  /**
+   * Propiedades del componente
+   * @returns {Object}
+   * @property {Object} user - Información del usuario
+   * @property {Array} userPosts - Posts del usuario
+   * @property {Number} page - Página actual
+   * @property {Boolean} loading - Indica si se están cargando los posts
+   * @property {Boolean} hasMore - Indica si hay más posts para cargar
+   */
+  data() {
+    return {
+      user: null,
+      userPosts: [],
+      page: 1,
+      loading: false,
+      hasMore: true
+    }
+  },
+  /**
+   * Método que se ejecuta cuando el componente se monta
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - Error al cargar los datos del usuario
+   */
+  mounted() {
+    this.loadUserData();
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  /**
+   * Método que se ejecuta cuando el componente se desmonta
+   */
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+  methods: {
+    /**
+     * Carga los datos del usuario
+     * @returns {Promise&lt;void>}
+     * @throws {Error} - Error al cargar los datos del usuario
+     */
+    async loadUserData() {
+      try {
+        this.user = await getMe();
+        this.loadUserPosts();
+        
+      } catch (error) {
+        console.error('Error al cargar datos del usuario:', error);
+      }
+    },
+    /**
+     * Carga los posts del usuario
+     * @returns {Promise&lt;void>}
+     * @throws {Error} - Error al cargar los posts del usuario
+     */
+    async loadUserPosts() {
+      if (this.loading || !this.hasMore) return;
+
+      this.loading = true;
+      try {
+        const response = await getMyPosts(this.user.data.id, this.page);
+        const newPosts = response.data;
+        this.userPosts = [...this.userPosts, ...newPosts];
+        console.log(this.userPosts)
+        this.page++;
+        this.hasMore = response.links.next !== null;
+        
+        if (!this.hasMore) {
+          console.log('No hay más posts para cargar');
+        }
+      } catch (error) {
+        console.error('Error al cargar los posts del usuario:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    /**
+     * Maneja el scroll de la página
+     */
+    handleScroll() {
+      const loadingTrigger = this.$refs.loadingTrigger;
+      if (!loadingTrigger) return;
+
+      const rect = loadingTrigger.getBoundingClientRect();
+      if (rect.top &lt;= window.innerHeight &amp;&amp; !this.loading &amp;&amp; this.hasMore) {
+        this.loadUserPosts();
+      }
+    },
+    /**
+     * Redirige al usuario a la página de edición de perfil
+     */
+    editProfile() {
+      this.$router.push('/edit-profile');
+    },
+    /**
+     * Maneja la eliminación de un post
+     * @param {Number} postId - ID del post
+     */
+    handleDeletePost(postId) {
+      this.userPosts = this.userPosts.filter(post => post.id !== postId);
+    }
+  },
+  /**
+   * Componentes del componente
+   */
+  components: {
+    PostGrid
+  }
+}
+&lt;/script>
+
+&lt;style scoped>
+.user-profile {
+  max-width: 100%;
+  margin: 10px;
+  padding: 20px;
+  min-height: 78vh;
+}
+
+.profile-sections {
+  display: flex;
+  gap: 20px;
+}
+
+.profile-section {
+  flex: 1;
+  margin-bottom: 20px;
+}
+h2, h3 {
+  color: #333;
+}
+
+p {
+  margin: 10px 0;
+}
+
+.profile-actions {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #333;
+}
+
+.posts-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.loading-trigger {
+  text-align: center;
+  padding: 20px;
+}
+
+@media screen and (max-width: 480px) {
+  .profile-sections {
+    flex-direction: column;
+  }
+  
+}
+&lt;/style>
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Mar 12 2025 19:09:14 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

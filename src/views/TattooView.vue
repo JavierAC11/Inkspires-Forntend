@@ -43,6 +43,14 @@
     
     export default {
     name: 'TattooAndArtistInfo',
+    /**
+     * Propiedades del componente
+     * @returns {Object}
+     *  @property {Object} tattoo - Información del tatuaje
+     * @property {Boolean} loading - Indica si se está cargando la información
+     * @property {String} error - Mensaje de error
+     * @property {String} apiUrl - URL de la API
+     */
     data() {
     return {
     tattoo: null,
@@ -51,10 +59,20 @@
     apiUrl: import.meta.env.VITE_API_URL
     }
     },
+    /**
+     * Método que se ejecuta al montar el componente
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al cargar la información del tatuaje
+     */
     mounted() {
     this.fetchTattooInfo();
     },
     methods: {
+    /**
+     * Obtiene la información del tatuaje
+     * @returns {Promise<void>}
+     * @throws {Error} - Error al cargar la información del tatuaje
+     */
     async fetchTattooInfo() {
     try {
     const tattooId = this.$route.params.id; // Asume que el ID del tatuaje está en la ruta
@@ -69,9 +87,17 @@
     this.loading = false;
     }
     },
+    /**
+     * Formatea una fecha en formato local
+     * @param {String} dateString - Fecha en formato ISO
+     * @returns {String} - Fecha formateada
+     */
     formatDate(dateString) {
     return new Date(dateString).toLocaleDateString();
     },
+    /**
+     * Navega a la página de portafolio del tatuador
+     */
     navigateToPortfolio() {
     this.$router.push(`/portfolio/${this.tattoo.user.id}`);
     
