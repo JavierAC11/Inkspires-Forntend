@@ -86,9 +86,9 @@ LOG_LEVEL=debug
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
-DB_DATABASE=proyecto
+DB_DATABASE=inkspires
 DB_USERNAME=root
-DB_PASSWORD=root
+DB_PASSWORD=useremail
 
 # DB_HOST=127.0.0.1
 # DB_PORT=3306
@@ -225,3 +225,8 @@ npm run dev
 - Este comando inicia el servidor de desarrollo Vite.
 
 Una vez hecho todo esto podremos acceder a la url que nos saldra a continuacion que probablemente sera http://localhost:5173/
+
+
+# Enlace al despliegue
+
+[Inkspires](http://54.37.155.202/)
