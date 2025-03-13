@@ -173,7 +173,55 @@ php artisan migrate
 ```
 - Este comando crea las tablas necesarias en la base de datos utilizando las migraciones definidas en el proyecto.
 
-### **11. Ejecutar migraciones**
+## Frontend
 
-docker-compose down && docker-compose up -d
+### **Requisitos mínimos**
 
+Antes de comenzar la instalación, asegúrate de que tu sistema cumpla con los siguientes requisitos:
+
+### **Herramientas**
+- **Node.js**: Versión 16 o superior.
+- **npm**: Gestor de paquetes incluido con Node.js.
+
+## **Pasos para la instalación del frontend**
+
+Sigue los pasos a continuación para configurar y ejecutar el frontend de tu proyecto Vue.js.
+
+### **1. Clonar el repositorio**
+
+```bash
+git clone https://github.com/IES-Rafael-Alberti/Inkspires-Forntend
+```
+
+- Descarga el código fuente del proyecto desde el repositorio remoto (por ejemplo, GitHub o GitLab).
+
+### **2. Navegar al directorio del proyecto**
+```bash
+cd Inkspires-Forntend
+```
+
+### **3. Instalar dependencias**
+
+```bash
+npm install --force
+```
+- Este comando instala las dependencias necesarias para Vue.js, como las librerías definidas en `package.json`.
+- La opción `--force` fuerza la instalación incluso si hay advertencias sobre compatibilidad.
+
+### **4. Configurar el archivo `.env`**
+Ejemplo básico:
+
+```env
+VITE_API_URL="http://localhost:8080/api"
+VITE_API_GOOGLE_MAPS_KEY="KeyDeLaApiDeGoogleMaps"
+```
+- Edita el archivo `.env` para configurar las variables de entorno necesarias para tu aplicación.
+
+### **5. Iniciar el servidor de desarrollo**
+
+```bash
+npm run dev
+```
+- Este comando inicia el servidor de desarrollo Vite.
+
+Una vez hecho todo esto podremos acceder a la url que nos saldra a continuacion que probablemente sera http://localhost:5173/
