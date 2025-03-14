@@ -6,19 +6,19 @@
       <!-- Campos básicos -->
       <div class="form-group">
         <label for="nombre">Nombre (max. 20 caracteres)</label>
-        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" maxlength="20"/>
+        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" placeholder="Nombre" maxlength="20"/>
         <p v-if="errors.nombre" class="error">{{ errors.nombre }}</p>
       </div>
 
       <div class="form-group">
         <label for="email">Correo Electrónico</label>
-        <input type="email" id="email" @blur="handleBlur($event)" v-model.trim="form.email" />
+        <input type="email" id="email" @blur="handleBlur($event)" v-model.trim="form.email" placeholder="ejemplo@ejemplo.com"/>
         <p v-if="errors.email" class="error">{{ errors.email }}</p>
       </div>
 
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" @blur="handleBlur($event)" v-model="form.password" />
+        <label for="password">Contraseña (min. 8 caracteres)</label>
+        <input type="password" id="password" @blur="handleBlur($event)" v-model="form.password" placeholder="password"/>
         <p v-if="errors.password" class="error">{{ errors.password }}</p>
       </div>
       <div class="form-group">
@@ -28,7 +28,7 @@
           @blur="handleBlur($event)"
           v-model="form.passwordRepeat" 
           type="password" 
-          placeholder="Repetir contraseña" 
+          placeholder="Repetir password" 
         />
         <p v-if="errors.passwordRepeat" class="error">{{ errors.passwordRepeat }}</p>
       </div>
@@ -60,16 +60,21 @@
 
         <div class="form-group">
           <label for="precioMedio">Precio medio</label>
-          <input type="number" step="1" min="0" id="precioMedio" v-model.number="form.precioMedio" @blur="handleBlur($event)"
+          <input type="number" step="1" min="0" id="precioMedio" v-model.number="form.precioMedio" @blur="handleBlur($event)" placeholder="Precio medio"
           />
           <p v-if="errors.precioMedio" class="error">{{ errors.precioMedio }}</p>
         </div>
 
         <div class="form-group">
-          <label for="descripcion">Descripción</label>
-          <textarea id="descripcion"           @blur="handleBlur($event)"
-          v-model.trim="form.descripcion"></textarea>
-          <p v-if="errors.descripcion" class="error">{{ errors.descripcion }}</p>
+          <label for="descripcion">Descripción (max. 200 caracteres)</label>
+          <textarea id="descripcion"           
+          @blur="handleBlur($event)"
+          v-model.trim="form.descripcion"
+          placeholder="Escribe una descripción..."
+          maxlength="200"
+          ></textarea>
+          <p v-if="errors.descripcion" class="error">{{ errors.descripcion }}
+          </p>
         </div>
 
         <!-- Campo de ubicación con autocompletado de Google Maps -->

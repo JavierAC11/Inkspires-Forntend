@@ -55,13 +55,26 @@ export default {
    * Método que se ejecuta al montar el componente
    * Obtiene los datos del usuario actual
    */
-  mounted() {
-    if (this.isLogin) {
+  async mounted() {
+    const authStore = useAuthStore();
+    try {
+      if (this.isLogin) {
+        await getMe().then((user) => {
+          this.currentUser = user;
+        });
+      }
+    } catch (error) {
+      authStore.token = null;
+      authStore.isLogin = false;
+      this.currentUser = null;
+      
+    }
+/*    if (this.isLogin) {
       const authStore = useAuthStore();
       getMe().then((user) => {
         this.currentUser = user;
       });
-    }
+    }*/
   },
   methods: {
     /**

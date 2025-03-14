@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
-import piniaPluginPersist from 'pinia-plugin-persist'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 
 import { FcLikePlaceholder } from "oh-vue-icons/icons";
@@ -18,7 +18,7 @@ addIcons(FcLike)
 const pinia = createPinia()
 
 // Agrega el plugin de persistencia
-pinia.use(piniaPluginPersist)
+pinia.use(piniaPluginPersistedstate)
 
 // Crea la app
 const app = createApp(App)

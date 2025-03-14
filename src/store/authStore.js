@@ -85,7 +85,8 @@ export const useAuthStore = defineStore('auth', {
             router.push('/login');
         }
         catch(error){
-            console.log(error);
+            this.token = null;
+            this.isLogin = false;
         }
         
     },

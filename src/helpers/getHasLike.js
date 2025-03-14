@@ -18,7 +18,6 @@ export const  getHasLike = async (postId, token) => {
     
             return response.data.has_liked;
         } catch (error) {
-            console.error('Error fetching like status:', error);
             return false; 
         }
     
