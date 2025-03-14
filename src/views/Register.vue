@@ -5,8 +5,8 @@
 
       <!-- Campos básicos -->
       <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" />
+        <label for="nombre">Nombre (max. 20 caracteres)</label>
+        <input type="text" id="nombre" @blur="handleBlur($event)" v-model.trim="form.nombre" maxlength="20"/>
         <p v-if="errors.nombre" class="error">{{ errors.nombre }}</p>
       </div>
 

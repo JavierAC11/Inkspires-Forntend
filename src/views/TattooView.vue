@@ -107,14 +107,16 @@
     </script>
     
     <style scoped>
-    .tattoo-info-container {
+ .tattoo-info-container {
+  min-width: none;
     display: flex;
-    justify-content: space-between;
-    max-width: 100%;
-    margin: 0 auto;
+    justify-content: center; /* Centra horizontalmente */
+    /*max-width: 968px;*/
     padding: 40px 20px;
     gap: 40px;
-    }
+    min-height: 74.5vh;     /* Asegura una altura mínima para el contenedor */
+}
+
     
     .tattoo-section, .artist-section {
     flex: 1;
@@ -123,6 +125,8 @@
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    max-width: 400px;
+    max-height: 75%;
     }
     
     .tattoo-section:hover, .artist-section:hover {
