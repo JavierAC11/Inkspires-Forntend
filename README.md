@@ -10,6 +10,11 @@ Este proyecto es una página web dedicada a los tatuajes, diseñada para explora
 - **Galería de tatuajes**: Imágenes categorizadas que se pueden fitrar por estilos y tamaños.
 - **Perfil de artistas**: Información detallada sobre tatuadores destacados.
 
+### Posibles mejoras
+- **Edición de perfil**: Los usuarios pueden modificar su información personal.
+- **Sistema de favoritos**: Permite guardar publicaciones favoritas para acceder fácilmente.
+- **Chat en tiempo real**: Comunicación instantánea entre usuarios y artistas tatuadores.
+
 # Guia de instalación
 A continuacion esta la guia de instalacion paso a paso tanto el backend como el frontend
 
